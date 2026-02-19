@@ -81,7 +81,7 @@ Commit message format:
 
 ```bash
 git fetch origin
-git pull origin main
+git rebase origin/main
 ```
 
 ### 5. Push Your Changes and Open a Draft PR
