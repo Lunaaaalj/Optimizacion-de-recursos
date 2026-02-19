@@ -217,3 +217,4 @@ __marimo__/
 *.fdb_latexmk
 *.out
 *.synctex.gz
+*.log
