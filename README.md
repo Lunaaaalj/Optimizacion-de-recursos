@@ -61,10 +61,3 @@ DS-Template/
 - Document your process and findings
 - Follow the principle of reproducibility
 
-## Contributing
-
-When contributing to this project, please:
-1. Follow the existing code style and structure
-2. Write tests for new functionality
-3. Update documentation as needed
-4. Keep notebooks clean and well-documented
