@@ -1,7 +1,5 @@
 # Contributing to Optimizacion-de-recursos
 
-Thank you for your interest in contributing to this project! This document provides guidelines and instructions for contributing.
-
 ## Table of Contents
 
 - [Getting Started](#getting-started)
@@ -20,7 +18,13 @@ Thank you for your interest in contributing to this project! This document provi
    git clone https://github.com/Lunaaaalj/Optimizacion-de-recursos.git
    cd Optimizacion-de-recursos
    ```
-2. **Install dependencies**:
+2. **Create your virtual environment and activate it**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   ```
+
+3. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
@@ -32,12 +36,16 @@ Thank you for your interest in contributing to this project! This document provi
 Always create a new branch for your work. Never commit directly to `main`.
 
 ```bash
-# Update your local main branch
-git checkout main
+# Check the status of the main branch
+git fetch
+git status
+# If git status shows something like:
+#   "your branch is behind 'origin/main' by N commits"
+# then update your local main branch:
 git pull origin main
 
 # Create a new feature branch
-git checkout -b feature/your-feature-name
+git switch -c feature/your-feature-name
 ```
 
 Branch naming conventions:
