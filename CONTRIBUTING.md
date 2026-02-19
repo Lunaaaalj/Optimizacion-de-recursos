@@ -13,17 +13,14 @@ Thank you for your interest in contributing to this project! This document provi
 
 ## Getting Started
 
-1. **Fork the repository** to your GitHub account
-2. **Clone your fork** locally:
+> **Note:** Contributions are only accepted from collaborators with branch permissions on this repository. If you do not have access, please contact a maintainer.
+
+1. **Clone the repository** locally:
    ```bash
-   git clone https://github.com/YOUR-USERNAME/Optimizacion-de-recursos.git
+   git clone https://github.com/Lunaaaalj/Optimizacion-de-recursos.git
    cd Optimizacion-de-recursos
    ```
-3. **Add the upstream remote**:
-   ```bash
-   git remote add upstream https://github.com/Lunaaaalj/Optimizacion-de-recursos.git
-   ```
-4. **Install dependencies**:
+2. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
@@ -37,7 +34,7 @@ Always create a new branch for your work. Never commit directly to `main`.
 ```bash
 # Update your local main branch
 git checkout main
-git pull upstream main
+git pull origin main
 
 # Create a new feature branch
 git checkout -b feature/your-feature-name
@@ -75,15 +72,23 @@ Commit message format:
 ### 4. Keep Your Branch Updated
 
 ```bash
-git fetch upstream
-git rebase upstream/main
+git fetch origin
+git rebase origin/main
 ```
 
-### 5. Push Your Changes
+### 5. Push Your Changes and Open a Draft PR
 
 ```bash
 git push origin feature/your-feature-name
 ```
+
+**Immediately after your first push**, open a [Draft Pull Request](https://github.com/Lunaaaalj/Optimizacion-de-recursos/compare) against `main`. This signals that work is in progress, allows early visibility, and triggers CI checks while you continue developing.
+
+- Go to the repository and click **"Compare & pull request"**
+- Select **"Create draft pull request"** (not "Ready for review")
+- Fill in a provisional title and description so reviewers can follow progress
+
+When your work is complete, mark the PR as **"Ready for review"** to request formal review.
 
 ## Branch Strategy
 
