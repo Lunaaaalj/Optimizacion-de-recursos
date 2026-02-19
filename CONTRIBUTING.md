@@ -39,7 +39,9 @@ Always create a new branch for your work. Never commit directly to `main`.
 # Check the status of the main branch
 git fetch
 git status
-# if behind remote branch
+# If git status shows something like:
+#   "your branch is behind 'origin/main' by N commits"
+# then update your local main branch:
 git pull origin main
 
 # Create a new feature branch
