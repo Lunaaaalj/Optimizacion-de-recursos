@@ -25,6 +25,8 @@
 \usepackage{lettrine}
 \usepackage{lipsum}
 \usepackage{tikz-3dplot}
+\usepackage[backend = biber, style = apa]{biblatex}
+\addbibresource{../../references/refs.bib}
 
 \hypersetup{
     colorlinks=true,
@@ -280,6 +282,16 @@ La tienda quiere minimizar $u_k$, por lo que:
 \section{El Problema de los Menus}
 A diferencia del problema de la dieta pura, el problema de planificación de menús introduce variables binarias e índices de aceptabilidad para garantizar que la comida sea variada y del agrado de los comensales. Balintfy (1975) fue pionero en formular modelos de programación entera para menús institucionales (hospitales, escuelas), asegurando combinaciones gastronómicas lógicas.
 
-Se han desarrollado dos metodos de optimizacion basico para acercarse a este problema 
+Es una familia de modelos cuyo objetivo es decidir cuánto y cuándo pedir/producir inventario para minimizar costos (o maximizar utilidad), cumpliendo la demanda y ciertas restricciones reales.
+
+Un modelo basico de esta familia es el \textit{Economic Order Quantity}:
+
+\begin{align}
+  q^* = \sqrt{\frac{2KD}{h}}
+\end{align}
+
+\nocite{*}
+
+\printbibliography
 
 \end{document}
