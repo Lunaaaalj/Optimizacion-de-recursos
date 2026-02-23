@@ -207,11 +207,79 @@
 \section{Problema a Resolver}
 \subsection{Objetivo}
 
-\chapter{Análisis de literatura}
-\section{El Problema de la Dieta}
-\section{El Problema de Inventarios}
-\section{El Problema de los Menus}
-\section{Modelos de Resolución}
+\chapter{Analísis de literatura}
 
+
+\section{El Problema de la Dieta}
+El problema de la dieta es uno de los primeros y más famosos casos de aplicación de la programación lineal. Originado por George Stigler (1945), busca encontrar la combinación más económica de alimentos que satisfaga ciertas necesidades nutricionales. Aunque el modelo original asume divisibilidad total y no considera la palatabilidad, sentó las bases para el modelado nutricional moderno.
+
+Stigler planeto el siguiente problema:
+
+\begin{quote}
+  "Para un hombre moderadamente activo,  (economista), pesando 154 libras cuanto de cada una de las 77 comidas deberian ser comsumidas diariamente para que su consumo de 9 nutrientes sea, al menos, igual a la dosis dietetica recomendada (RDA), con el costo de la dieta siendo minima?"\autocite{dantzig1990}
+\end{quote}
+
+\begin{table}[H]
+\centering
+\caption{1943 RDAs for a moderately active 154-pound man.}
+\label{tab:rda1943}
+\begin{tabular}{@{}l r@{}}
+\hline
+\textbf{Nutrient} & \textbf{RDA} \\
+\hline
+Calories & 3,000 kcalories \\
+Protein & 70 grams \\
+Calcium & 0.8 grams \\
+Iron & 12 milligrams \\
+Vitamin A & 5,000 IU \\
+Thiamine (Vitamin B$_1$) & 1.8 milligrams \\
+Riboflavin (Vitamin B$_2$) & 2.7 milligrams \\
+Niacin & 18 milligrams \\
+Ascorbic Acid (Vitamin C) & 75 milligrams \\
+\hline
+\end{tabular}
+\end{table}
+
+
+El análisis de este problema es importante, dado a que se da un enfoque en encontrar el la mejor combinación de nutrientes mientras se mantiene el minimo costo posible, lo cual nos da un acercamiento sobre como podemos resolver el problema de satisfacer las necesidades dieteticas de los albergados por la orgranizacion. 
+
+Asimismo, se podria sugerir un enfoque mas preciso incluyendo tambien las necesidades nutricionales para grupos de distintas edades y sexos lo cual aunque puede presentar un problema estocastico, si su modelación matemática es posible podria darnos la oportunidad de tener un modelo mas complejo y representativo de la realidad.
+
+El problema sugiere un modelo de la estructura de programaciòn lineal:
+
+\begin{align*}
+  \mathbf{Min}\quad x\\
+  s.t\quad & d\leq Ax \leq b\\
+  x\geq 0
+\end{align*}
+
+
+
+
+\section{El Problema de Inventarios}
+La teoría de inventarios aborda cómo y cuándo reabastecer productos. En el contexto de alimentos, los modelos deterministas (como el lote económico o EOQ) deben adaptarse para incluir la \textit{perecibilidad}. Nahmias (1982) estableció fundamentos clave sobre cómo modelar productos con vida útil fija, lo cual es esencial para ingredientes como lácteos, carnes y verduras frescas en el albergue.
+
+El problema puede ser modelado usando teorias de control optimo, programación dinamica, y optimización de redes. 
+
+El problema matematico consiste en lo siguiente:
+
+Una tienda tiene en un tiempo $k$ $x_K$ objetos en su inventario. Depues ordena y recibe  $u_k$ objetos y vende $w_k$, donde $w_k$ sigue una distribución de probabilidad. Entonces:
+
+\begin{align}
+  x_{x+1}=x_k+u_k-w_k\\
+  u_k\geq 0
+\end{align}
+
+La tienda quiere minimizar $u_k$, por lo que:
+
+\begin{align}
+  \mathbf{Min}\sum_{k=0}^{T}c_k.
+\end{align}\autocite{enwiki:1187845455}
+
+
+\section{El Problema de los Menus}
+A diferencia del problema de la dieta pura, el problema de planificación de menús introduce variables binarias e índices de aceptabilidad para garantizar que la comida sea variada y del agrado de los comensales. Balintfy (1975) fue pionero en formular modelos de programación entera para menús institucionales (hospitales, escuelas), asegurando combinaciones gastronómicas lógicas.
+
+Se han desarrollado dos metodos de optimizacion basico para acercarse a este problema 
 
 \end{document}
