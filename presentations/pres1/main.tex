@@ -1,0 +1,55 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\usefonttheme{professionalfonts}
+\usepackage[spanish]{babel}
+
+\title{Optimizacion de recursos casa Monarca}
+\subtitle{Sets, Parameters, and Decision Variables}
+\author{Angel Luna,}
+\institute{Intituto Tecnologico y de Estudios Superiores de Monterrey}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Definicion del Modelo}
+  \textbf{Sets}
+  \begin{itemize}
+    \item $I$: set of resources
+    \item $J$: set of activities
+  \end{itemize}
+
+  \textbf{Parameters}
+  \begin{itemize}
+    \item $a_{ij}$: units of resource $i$ required per unit of activity $j$
+    \item $b_i$: availability of resource $i$
+    \item $c_j$: profit (or cost) per unit of activity $j$
+  \end{itemize}
+
+  \textbf{Decision Variables}
+  \begin{itemize}
+    \item $x_j$: amount of activity $j$ to perform
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Objective and Constraints}
+  \textbf{Objective Function}
+  \[
+    \max \sum_{j \in J} c_j x_j
+  \]
+
+  \textbf{Constraints}
+  \[
+    \sum_{j \in J} a_{ij} x_j \le b_i \quad \forall i \in I
+  \]
+  \[
+    x_j \ge 0 \quad \forall j \in J
+  \]
+\end{frame}
+
+\end{document}
