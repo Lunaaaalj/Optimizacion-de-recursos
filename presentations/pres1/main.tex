@@ -1,13 +1,19 @@
-\documentclass[aspectratio=169]{beamer}
+\documentclass[aspectratio=169,10ppt]{beamer}
 
 \usetheme{Madrid}
 \usecolortheme{seahorse}
 \usefonttheme{professionalfonts}
 \usepackage[spanish]{babel}
 
+\setbeamerfont{title}{size=\Large}
+\setbeamerfont{subtitle}{size=\normalsize}
+\setbeamerfont{author}{size=\normalsize}
+\setbeamerfont{institute}{size=\small}
+\setbeamerfont{date}{size=\small}
+
 \title{Optimizacion de recursos casa Monarca}
 \subtitle{Sets, Parameters, and Decision Variables}
-\author{Angel Luna,}
+\author{Angel Luna,Noe Villareal, Angel Ruben, Ignacio Kume}
 \institute{Intituto Tecnologico y de Estudios Superiores de Monterrey}
 \date{\today}
 
@@ -18,37 +24,64 @@
 \end{frame}
 
 \begin{frame}{Definicion del Modelo}
-  \textbf{Sets}
+  \textbf{Conjuntos (Indices)}
   \begin{itemize}
-    \item $I$: set of resources
-    \item $J$: set of activities
+    \item $I$: insumos o ingredientes
+    \item $T$: dias de la semana, $t \in \{1,2,3,4,5,6,7\}$
+    \item $M$: platillos o menus disponibles
+    \item $K$: dias de vida util
   \end{itemize}
 
-  \textbf{Parameters}
+  \textbf{Parametros}
   \begin{itemize}
-    \item $a_{ij}$: units of resource $i$ required per unit of activity $j$
-    \item $b_i$: availability of resource $i$
-    \item $c_j$: profit (or cost) per unit of activity $j$
+    \item $C_i$: costo de comprar una unidad del insumo $i$
+    \item $\text{Receta}_{i,m}$: cantidad del insumo $i$ por porcion del platillo $m$
+    \item $Demanda_t$: personas a alimentar el dia $t$
+    \item $Donaciones_{i,t}$: insumo $i$ recibido gratis el dia $t$
+    \item $Capacidad_i$: espacio maximo de bodega para el insumo $i$
+    \item $Lote_i$: tamano del paquete del insumo $i$
+    \item $\tau_i$: vida util maxima del insumo $i$
   \end{itemize}
 
-  \textbf{Decision Variables}
+\end{frame}
+
+\begin{frame}{Definicion del Modelo}
+  \textbf{Variables de Decision}
   \begin{itemize}
-    \item $x_j$: amount of activity $j$ to perform
+    \item $Z_{m,t} \ge 0$ (entera): porciones del platillo $m$ a cocinar el dia $t$
+    \item $Y_{i,t} \ge 0$ (entera): paquetes a comprar del insumo $i$ el dia $t$
+    \item $X_{i,t} \ge 0$ (continua): cantidad total comprada del insumo $i$ el dia $t$
+    \item $Consumo_{i,t} \ge 0$ (continua): cantidad del insumo $i$ usada el dia $t$
+    \item $Consumo\_Edad_{i,t,k} \ge 0$ (continua): consumo del insumo $i$ con $k$ dias de vida
+    \item $Inv_{i,t,k} \ge 0$ (continua): inventario del insumo $i$ al final del dia $t$ con $k$ dias de vida
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Objective and Constraints}
-  \textbf{Objective Function}
+
+\begin{frame}{Funcion Objetivo y Restricciones}
+  \textbf{Funcion Objetivo}
   \[
-    \max \sum_{j \in J} c_j x_j
+    \min Z = \sum_{t \in T} \sum_{i \in I} C_i \, X_{i,t}
   \]
 
-  \textbf{Constraints}
+  \textbf{Restricciones}
   \[
-    \sum_{j \in J} a_{ij} x_j \le b_i \quad \forall i \in I
+    \sum_{m \in M} Z_{m,t} \ge Demanda_t \quad \forall t \in T
   \]
   \[
-    x_j \ge 0 \quad \forall j \in J
+    Consumo_{i,t} = \sum_{m \in M} \text{Receta}_{i,m} \, Z_{m,t} \quad \forall i \in I, \forall t \in T
+  \]
+  \[
+    X_{i,t} = Lote_i \, Y_{i,t} \quad \forall i \in I, \forall t \in T
+  \]
+  \[
+    \sum_{k \in K} Inv_{i,t,k} \le Capacidad_i \quad \forall i \in I, \forall t \in T
+  \]
+  \[
+    Inv_{i,t,\tau_i} = X_{i,t} + Donaciones_{i,t} \quad \forall i \in I, \forall t \in T
+  \]
+  \[
+    Inv_{i,t,k-1} = Inv_{i,t-1,k} - Consumo\_Edad_{i,t,k} \quad \forall i \in I, \forall t > 1, \forall k \in K
   \]
 \end{frame}
 
