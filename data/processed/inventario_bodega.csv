@@ -1,0 +1,16 @@
+,ID,Insumo,Número,Cantidad,Unidad,Total,Unidad.1
+0,1,Aceite,52.0,1.0,litro,52.0,litro
+1,2,Aceite,100.0,0.4,litro,40.0,litro
+2,3,Galletas,35.0,1.0,paquete,35.0,paquete
+3,4,Electrolit,1320.0,0.355,litro,468.59999999999997,litro
+4,5,Sopa / pasta,300.0,1.0,paquete,300.0,paquete
+5,6,Frijoles,330.0,1.0,kg,330.0,kilogramo
+6,7,Arroz,100.0,1.0,kg,100.0,kilogramo
+7,8,Azúcar blanca,156.0,1.0,kg,156.0,kilogramo
+8,9,Harina (Maseca),100.0,1.0,kg,100.0,kilogramo
+9,10,Latas varias (verduras),70.0,1.0,lata,70.0,lata
+10,11,Latas atún,56.0,0.13,kg,7.28,kilogramo
+11,12,Sobres de atún,13.0,0.075,kg,0.975,kilogramo
+12,13,Frijoles refritos,9.0,0.43,kg,3.87,kilogramo
+13,14,Leche,7.5,1.0,litro,7.5,litro
+14,15,Leche c/24,27.0,0.2,litro,5.4,litro
