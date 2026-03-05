@@ -1,0 +1,154 @@
+% Tabla de Mapeo de Notación: Antigua -> Nueva
+% Incluir en documentos LaTeX con: \input{notation-mapping-table}
+
+\begin{table}[h]
+\centering
+\caption{Mapeo de Notación: Antigua vs. Nueva}
+\label{tab:notation-mapping}
+
+\begin{tabular}{|l|l|l|p{6cm}|}
+\hline
+\textbf{Categoría} & \textbf{Antigua} & \textbf{Nueva} & \textbf{Descripción/Notas} \\
+\hline
+\multicolumn{4}{|c|}{\textit{Parámetros Económicos}} \\
+\hline
+Costos (vector) & $C$ & $\mathbf{c}$ & Vector de costos unitarios \\
+Costo insumo $i$ & $C_i$ & $c_i$ & Notación estándar de elementos \\
+Lotes comerciales & $Lote_i$ & $\ell_i$ & Presentaciones comerciales \\
+Presupuesto total & $\mathcal{B}$ & $B$ & Límite de gasto global \\
+\hline
+\multicolumn{4}{|c|}{\textit{Parámetros de Flujo}} \\
+\hline
+Demanda período & $Demanda_{t,c}$ & $d_{t,c}$ & Porciones requeridas \\
+Donaciones externas & $Donaciones_{i,t}$ & $\delta_{i,t}$ & Delta: externo, exógeno \\
+Inventario inicial & $\mathcal{I}_{i,0}$ & $I_{i,0}$ & Stock inicial \\
+\hline
+\multicolumn{4}{|c|}{\textit{Parámetros Técnicos}} \\
+\hline
+Coef. técnicos (matriz) & $\hat{R}$ & $\mathbf{A}$ o $a_{i,m}$ & Matriz de recetas \\
+Coef. técnico $(i,m)$ & $\hat{R}_{i,m}$ & $a_{i,m}$ & Insumo $i$ por porción plato $m$ \\
+Calendario (tensor) & $\mathcal{A}$ & $\boldsymbol{\alpha}$ & Disponibilidad de menú \\
+Calendario $(m,t,c)$ & $\mathcal{A}_{m,t,c}$ & $\alpha_{m,t,c}$ & Indicador: plato $m$ en $t$, $c$ \\
+\hline
+\multicolumn{4}{|c|}{\textit{Variables de Decisión: Producción}} \\
+\hline
+Producción & $Z_{m,t,c}$ & $z_{m,t,c}$ & Porciones plato $m$, día $t$, comida $c$ \\
+\hline
+\multicolumn{4}{|c|}{\textit{Variables de Decisión: Compra}} \\
+\hline
+Compras netas & $X_{i,t}$ & $x_{i,t}$ & Volumen comprado insumo $i$ en día $t$ \\
+Lotes comprados & $Y_{i,t}$ & $y_{i,t}$ & Número de lotes del insumo $i$ en día $t$ \\
+\hline
+\multicolumn{4}{|c|}{\textit{Variables de Decisión: Flujos Internos}} \\
+\hline
+Consumo/Destrucción & $Consumo_{i,t}$ & $\gamma_{i,t}$ & Gamma: consumo, flujo de salida \\
+Inventario final & $Inv_{i,t}$ & $\mu_{i,t}$ & Mu: memoria del sistema, estado \\
+\hline
+\multicolumn{4}{|c|}{\textit{Función Objetivo}} \\
+\hline
+Costo total & $\mathcal{Z}$ & $\Phi$ & Phi: función objetivo global \\
+\hline
+\multicolumn{4}{|c|}{\textit{Conjuntos (Sin cambios)}} \\
+\hline
+Insumos & $I$ & $I$ & Ingredientes, 30 elementos \\
+Períodos & $T$ & $T$ & Días, 7 elementos \\
+Comidas & $C$ & $C$ & Desayuno, comida, cena \\
+Platos & $M$ & $M$ & Menú disponible, 12 elementos \\
+\hline
+\end{tabular}
+\end{table}
+
+% Tabla 2: Ecuaciones principales
+\begin{table}[h]
+\centering
+\caption{Ecuaciones Principales: Antigua vs. Nueva Notación}
+\label{tab:equations-mapping}
+
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Anterior} & \textbf{Actual} \\
+\hline
+\multicolumn{2}{|c|}{\textbf{Demanda}} \\
+\hline
+$\sum_{m} Z_{m,t,c} \ge Demanda_{t,c}$ &
+$\sum_{m \in M} z_{m,t,c} \geq d_{t,c}$ \\
+\hline
+\multicolumn{2}{|c|}{\textbf{Consumo (Menú $\to$ Insumo)}} \\
+\hline
+$Consumo_{i,t} = \sum_c \sum_m \hat{R}_{i,m} \cdot Z_{m,t,c}$ &
+$\gamma_{i,t} = \sum_{c \in C} \sum_{m \in M} a_{i,m} \cdot z_{m,t,c}$ \\
+\hline
+\multicolumn{2}{|c|}{\textbf{Lotes}} \\
+\hline
+$X_{i,t} = Lote_i \cdot Y_{i,t}$ &
+$x_{i,t} = \ell_i \cdot y_{i,t}$ \\
+\hline
+\multicolumn{2}{|c|}{\textbf{Presupuesto}} \\
+\hline
+$\sum_t \sum_i C_i \cdot X_{i,t} \le \mathcal{B}$ &
+$\sum_{t \in T} \sum_{i \in I} c_i \cdot x_{i,t} \leq B$ \\
+\hline
+\multicolumn{2}{|c|}{\textbf{Balance de Inventario}} \\
+\hline
+$Inv_{i,t} = Inv_{i,t-1} + X_{i,t} + Donaciones_{i,t} - Consumo_{i,t}$ &
+$\mu_{i,t} = \mu_{i,t-1} + x_{i,t} + \delta_{i,t} - \gamma_{i,t}$ \\
+\hline
+\multicolumn{2}{|c|}{\textbf{Función Objetivo}} \\
+\hline
+$\min \mathcal{Z} = \sum_t \sum_i C_i \cdot X_{i,t}$ &
+$\min \Phi = \sum_{t \in T} \sum_{i \in I} c_i \cdot x_{i,t}$ \\
+\hline
+\multicolumn{2}{|c|}{\textbf{Inventario Inicial}} \\
+\hline
+$Inv_{i,0} = \mathcal{I}_{i,0}$ &
+$\mu_{i,0} = I_{i,0}$ \\
+\hline
+\multicolumn{2}{|c|}{\textbf{Condición Terminal}} \\
+\hline
+$Inv_{i,7} \ge \mathcal{I}_{i,0}$ &
+$\mu_{i,7} \geq I_{i,0}$ \\
+\hline
+\end{tabular}
+\end{table}
+
+% Tabla 3: Guía de uso en código
+\begin{table}[h]
+\centering
+\caption{Guía de Implementación en Lenguajes de Modelado}
+\label{tab:implementation-guide}
+
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Símbolo} & \textbf{Nombre Variable Recomendado} \\
+\hline
+\multicolumn{2}{|c|}{\textbf{Pyomo}} \\
+\hline
+$c_i$ & \texttt{model.c = Param(model.I)} \\
+$d_{t,c}$ & \texttt{model.d = Param(model.T, model.C)} \\
+$\delta_{i,t}$ & \texttt{model.delta = Param(model.I, model.T)} \\
+$a_{i,m}$ & \texttt{model.a = Param(model.I, model.M)} \\
+$\alpha_{m,t,c}$ & \texttt{model.alpha = Param(model.M, model.T, model.C)} \\
+$\ell_i$ & \texttt{model.lot = Param(model.I)} \\
+$x_{i,t}$ & \texttt{model.x = Var(model.I, model.T, within=NonNegativeReals)} \\
+$y_{i,t}$ & \texttt{model.y = Var(model.I, model.T, within=NonNegativeIntegers)} \\
+$z_{m,t,c}$ & \texttt{model.z = Var(model.M, model.T, model.C, within=NonNegativeIntegers)} \\
+$\gamma_{i,t}$ & \texttt{model.gamma = Var(model.I, model.T, within=NonNegativeReals)} \\
+$\mu_{i,t}$ & \texttt{model.mu = Var(model.I, model.T, within=NonNegativeReals)} \\
+\hline
+\multicolumn{2}{|c|}{\textbf{Gurobi}} \\
+\hline
+$x_{i,t}$ & \texttt{x = m.addVar(vtype=GRB.CONTINUOUS, name=f`x[{i},{t}]`)} \\
+$y_{i,t}$ & \texttt{y = m.addVar(vtype=GRB.INTEGER, name=f`y[{i},{t}]`)} \\
+$z_{m,t,c}$ & \texttt{z = m.addVar(vtype=GRB.INTEGER, name=f`z[{m},{t},{c}]`)} \\
+$\gamma_{i,t}$ & \texttt{gamma = m.addVar(vtype=GRB.CONTINUOUS, name=f`gamma[{i},{t}]`)} \\
+$\mu_{i,t}$ & \texttt{mu = m.addVar(vtype=GRB.CONTINUOUS, name=f`mu[{i},{t}]`)} \\
+\hline
+\multicolumn{2}{|c|}{\textbf{PuLP}} \\
+\hline
+$x_{i,t}$ & \texttt{x = \{\{(i,t): LpVariable(f`x_{i}_{t}`, lowBound=0) for (i,t) in pairs\}} \\
+$y_{i,t}$ & \texttt{y = \{\{(i,t): LpVariable(f`y_{i}_{t}`, lowBound=0, cat=`Integer')} \\
+$\gamma_{i,t}$ & \texttt{gamma = \{\{(i,t): LpVariable(f`gamma_{i}_{t}`, lowBound=0)} \\
+$\mu_{i,t}$ & \texttt{mu = \{\{(i,t): LpVariable(f`mu_{i}_{t}`, lowBound=0)} \\
+\hline
+\end{tabular}
+\end{table}

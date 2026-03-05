@@ -1,0 +1,266 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{\textbf{Optimización de Flujos Alimentarios en Casa Monarca}}
+\author{Optimización Determinista}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+El presente documento formaliza rigurosamente el espacio de soluciones operativas para el problema de asignación de recursos, flujos de inventario y cumplimiento dietético en el refugio migrante ``Casa Monarca''. A través de Programación Lineal Entera Mixta (MILP), se modela un sistema dinámico discreto sobre un poliedro convexo delimitado por restricciones de balance de masa, capacidad presupuestal y grafos de asignación de menús. Se asume un mapeo lineal entre decisiones de preparación y variables de estado de inventario, buscando minimizar la norma ponderada del costo de adquisición.
+\end{abstract}
+
+\section{Notación Matemática}
+
+Para claridad y concisión, adoptamos la siguiente notación compacta en la formulación algebraica:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{ll}
+\toprule
+\textbf{Símbolo} & \textbf{Descripción} \\
+\midrule
+$\mathbf{c}$ & Vector de costos unitarios de insumos \\
+$d_{t,c}$ & Demanda de porciones en día $t$, comida $c$ \\
+$\delta_{i,t}$ & Donaciones del insumo $i$ en día $t$ \\
+$I_{i,0}$ & Inventario inicial del insumo $i$ \\
+$B$ & Presupuesto total disponible \\
+$a_{i,m}$ & Coeficiente técnico: cantidad de insumo $i$ por porción del plato $m$ \\
+$\alpha_{m,t,c}$ & Indicador binario: disponibilidad de plato $m$ en día $t$, comida $c$ \\
+$\ell_i$ & Tamaño de lote comercial del insumo $i$ \\
+\midrule
+$x_{i,t}$ & Volumen (masa/cantidad) comprado del insumo $i$ en día $t$ \\
+$y_{i,t}$ & Número de lotes comprados del insumo $i$ en día $t$ \\
+$z_{m,t,c}$ & Número de porciones del plato $m$ preparadas en día $t$, comida $c$ \\
+$\gamma_{i,t}$ & Consumo (destrucción) del insumo $i$ durante día $t$ \\
+$\mu_{i,t}$ & Nivel de inventario del insumo $i$ al final del día $t$ \\
+$\Phi$ & Costo total del horizonte de optimización \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Topología de Conjuntos Discretos (Índices)}
+Para dotar al modelo de rigor algebraico y prevenir el colapso dimensional, proyectamos el espacio del problema en los siguientes conjuntos ortogonales, los cuales actúan como las bases de nuestro espacio tensorial:
+
+\begin{itemize}
+    \item \textbf{Subespacio de Insumos ($I$)}: Define el catálogo de materia prima. Índice $i \in \{1, \dots, 30\}$.\\
+    $I = \{1:\text{Arroz}, \; 2:\text{Frijol}, \; 3:\text{Tortilla}, \; 4:\text{Tomate}, \; 5:\text{Cebolla}, \; 6:\text{Papa}, \; 7:\text{Zanahoria}, \; 8:\text{Espinaca}, \; 9:\text{Champiñones}, \; 10:\text{Cilantro}, \; 11:\text{Lechuga}, \; 12:\text{Pasta}, \; 13:\text{Chile}, \; 14:\text{Aceite}, \; 15:\text{Huevo}, \; 16:\text{Sal}, \; 17:\text{Leche}, \; 18:\text{Café}, \; 19:\text{Agua}, \; 20:\text{Azúcar}, \; 21:\text{Galletas}, \; 22:\text{Pasteles}, \; 23:\text{Pan}, \; 24:\text{Atún}, \; 25:\text{Pollo}, \; 26:\text{Res}, \; 27:\text{Refrescos}, \; 28:\text{Saborizantes}, \; 29:\text{Harina}, \; 30:\text{Cereal}\}$.
+
+    \item \textbf{Subespacio Temporal ($T$)}: Representa el horizonte de discretización de diferencias finitas en días. Índice $t \in \{1, \dots, 7\}$.\\
+    $T = \{1:\text{Lunes}, \; 2:\text{Martes}, \; 3:\text{Miércoles}, \; 4:\text{Jueves}, \; 5:\text{Viernes}, \; 6:\text{Sábado}, \; 7:\text{Domingo}\}$.
+
+    \item \textbf{Fibrado de Tiempos de Comida ($C$)}: Particiones del requerimiento calórico diario. Índice $c \in \{1, 2, 3\}$.\\
+    $C = \{1:\text{Desayuno}, \; 2:\text{Comida}, \; 3:\text{Cena}\}$.
+
+    \item \textbf{Subespacio de Platillos ($M$)}: El catálogo de transformaciones culinarias disponibles. Índice $m \in \{1, \dots, 12\}$.\\
+    $M = \{1:\text{Huevo con chorizo}, \; 2:\text{Huevo estrellado}, \; 3:\text{Huevo con jamón}, \; 4:\text{Tortas jamón/queso}, \; 5:\text{Huevo con papa}, \; 6:\text{Cereal con leche}, \; 7:\text{Huevo con salchicha}, \; 8:\text{Ensalada de atún}, \; 9:\text{Pollo frito/pasta}, \; 10:\text{Sándwich de pavo}, \; 11:\text{Milanesa de res}, \; 12:\text{Guiso de res}\}$.
+\end{itemize}
+
+\section{Definición de parámetros}
+
+\subsection{Parámetros Económicos y Lotes de Compra}
+El vector de precios $\mathbf{c} \in \mathbb{R}^{|I|}$ dicta el gradiente de la función objetivo. El vector de lotes $\ell \in \mathbb{Z}^{|I|}$ establece los saltos discretos permitidos en las compras comerciales.
+
+\begin{longtable}{llcc|llcc}
+\toprule
+$i$ & \textbf{Insumo} & $c_i$ (\$ MXN) & $\ell_i$ & $i$ & \textbf{Insumo} & $c_i$ (\$ MXN) & $\ell_i$ \\
+\midrule
+1  & Arroz (kg) & 25.00 & 1 & 16 & Sal (kg) & 20.00 & 1 \\
+2  & Frijol (kg) & 38.00 & 1 & 17 & Leche (L) & 28.00 & 1 \\
+3  & Tortilla (kg) & 25.00 & 1 & 18 & Café (kg) & 150.00 & 1 \\
+4  & Tomate (kg) & 30.00 & 1 & 19 & Agua (L) & 2.50 & 1 \\
+5  & Cebolla (kg) & 25.00 & 1 & 20 & Azúcar (kg) & 35.00 & 1 \\
+6  & Papa (kg) & 35.00 & 1 & 21 & Galletas (paq) & 15.00 & 1 \\
+7  & Zanahoria (kg)& 20.00 & 1 & 22 & Pasteles (pz) & 100.00 & 1 \\
+8  & Espinaca (kg) & 30.00 & 1 & 23 & Pan (pz) & 3.00 & 1 \\
+9  & Champiñones (kg)& 90.00 & 1 & 24 & Atún (lata) & 20.00 & 1 \\
+10 & Cilantro (kg) & 50.00 & 1 & 25 & Pollo (kg) & 68.00 & 1 \\
+11 & Lechuga (pz) & 20.00 & 1 & 26 & Res (kg) & 180.00 & 1 \\
+12 & Pasta (paq) & 10.00 & 1 & 27 & Refrescos (L) & 15.00 & 1 \\
+13 & Chile (kg) & 40.00 & 1 & 28 & Saborizante (sobres)& 5.00 & 1 \\
+14 & Aceite (L) & 38.00 & 1 & 29 & Harina Maseca (kg) & 22.00 & 1 \\
+15 & Huevo (unidad)& 2.83 & 30 & 30 & Cereal (caja) & 60.00 & 1 \\
+\bottomrule
+\end{longtable}
+
+\subsection{Condiciones Iniciales, Demanda y Presupuesto}
+\begin{itemize}
+    \item \textbf{Presupuesto Global ($B$):} Acotación máxima del funcional de costo. $B = 50,000$.
+    \item \textbf{Demanda Constante ($d_{t,c}$):} Se modela isomorfa bajo la heurística $\forall t, c: d_{t,c} = 100$.
+\end{itemize}
+
+\subsection{Condición de Frontera en $t=0$: Inventario Inicial ($I_{i,0}$)}
+Para resolver la ecuación en diferencias finitas del sistema dinámico, requerimos el estado inicial del vector de inventario. Basado en el registro de la bodega (estado físico en $t=0$), definimos el parámetro $I_{i,0}$. Los insumos no listados se asumen en el origen ($I_{i,0} = 0$).
+
+\begin{longtable}{llc|llc}
+\toprule
+$i$ & \textbf{Insumo} & $I_{i,0}$ (Unidades) & $i$ & \textbf{Insumo} & $I_{i,0}$ (Unidades) \\
+\midrule
+1  & Arroz & 100 & 14 & Aceite & 92 \\
+2  & Frijol & 330 & 17 & Leche & 7.5 \\
+8  & Espinaca & 0 & 20 & Azúcar & 156 \\
+12 & Pasta / Spaguetti & 300 & 21 & Galletas & 35 \\
+13 & Chile & 0 & 24 & Atún (latas) & 69 \\
+29 & Harina Maseca & 100 & - & (Resto de insumos) & 0 \\
+\bottomrule
+\end{longtable}
+
+\subsection{ Asignación de Calendario ($\alpha_{m,t,c}$)}
+Para garantizar el apego a la planeación del socio formador, definimos el tensor $\boldsymbol{\alpha} \in \{0,1\}^{|M| \times |T| \times |C|}$. Este tensor ortogonaliza las decisiones de preparación. Las entradas no nulas ($\alpha_{m,t,c} = 1$) son las siguientes:
+
+\begin{longtable}{lccc}
+\toprule
+$t \in T$ (Día) & $c=1$ (Desayuno) & $c=2$ (Comida) & $c=3$ (Cena) \\
+\midrule
+1: Lunes & $m=1$ (Huevo/chorizo) & $m=9$ (Pollo/pasta) & $m=10$ (Sándwich) \\
+2: Martes & $m=5$ (Huevo/papa) & $m=12$ (Guiso res) & $m=4$ (Tortas) \\
+3: Miércoles & $m=2$ (Huevo estrellado) & $m=11$ (Milanesa res) & $m=8$ (Ensalada atún) \\
+4: Jueves & $m=3$ (Huevo/jamón) & $m=9$ (Pollo/pasta) & $m=10$ (Sándwich) \\
+5: Viernes & $m=7$ (Huevo/salchicha) & $m=12$ (Guiso res) & $m=4$ (Tortas) \\
+6: Sábado & $m=6$ (Cereal/leche) & $m=8$ (Ensalada atún) & $m=10$ (Sándwich) \\
+7: Domingo & $m=1$ (Huevo/chorizo) & $m=11$ (Milanesa res) & $m=4$ (Tortas) \\
+\bottomrule
+\end{longtable}
+
+\subsection{Coeficientes Técnicos ($a_{i,m}$)}
+El operador de recetas $a_{i,m}$ define la cantidad exacta del insumo $i$ requerida para producir una (1) unidad del platillo $m$. Al tratarse de una matriz dispersa (sparse matrix), listamos únicamente las proyecciones ortogonales distintas de cero. Estos coeficientes derivan de la normalización del requerimiento diario sobre una población $\mathcal{N} = 100$.
+
+\begin{longtable}{p{4cm} p{11cm}}
+\toprule
+$m \in M$ (Platillo) & $a_{i,m} > 0$ (Insumos $i$ requeridos por 1 porción) \\
+\midrule
+\textbf{1: Huevo con chorizo} & 15:Huevo (1.2), 2:Frijol (0.03), 3:Tortilla (0.18), 14:Aceite (0.01), 18:Café (0.005) \\
+\textbf{2: Huevo estrellado} & 15:Huevo (1.2), 2:Frijol (0.03), 23:Pan (1.0), 14:Aceite (0.01), 18:Café (0.005) \\
+\textbf{3: Huevo con jamón} & 15:Huevo (1.2), 2:Frijol (0.03), 3:Tortilla (0.18), 14:Aceite (0.01), 18:Café (0.005) \\
+\textbf{4: Tortas jamón/queso}& 23:Pan (1.0), 4:Tomate (0.02), 5:Cebolla (0.01), 15:Huevo (0.5), 18:Café (0.005) \\
+\textbf{5: Huevo con papa} & 15:Huevo (1.2), 6:Papa (0.05), 2:Frijol (0.03), 3:Tortilla (0.18), 14:Aceite (0.01), 18:Café (0.005) \\
+\textbf{6: Cereal con leche} & 30:Cereal (0.08), 17:Leche (0.25), 18:Café (0.005) \\
+\textbf{7: Huevo/salchicha} & 15:Huevo (1.2), 2:Frijol (0.03), 3:Tortilla (0.18), 14:Aceite (0.01), 18:Café (0.005) \\
+\midrule
+\textbf{8: Ensalada de atún} & 24:Atún (0.5), 11:Lechuga (0.05), 4:Tomate (0.02), 21:Galletas (0.10) \\
+\textbf{9: Pollo frito/pasta} & 25:Pollo (0.12), 12:Pasta (0.06), 4:Tomate (0.03), 14:Aceite (0.015), 19:Agua (0.4) \\
+\textbf{10: Sándwich de pavo} & 23:Pan (2.0), 4:Tomate (0.02), 5:Cebolla (0.01), 6:Papa (0.04), 7:Zanahoria (0.03), 19:Agua (0.4) \\
+\textbf{11: Milanesa de res} & 26:Res (0.10), 14:Aceite (0.015), 3:Tortilla (0.15), 19:Agua (0.4) \\
+\textbf{12: Guiso de res} & 26:Res (0.10), 6:Papa (0.04), 4:Tomate (0.03), 3:Tortilla (0.15), 19:Agua (0.4) \\
+\bottomrule
+\end{longtable}
+
+\subsection{Vector de Donaciones Programadas ($\delta_{i,t}$)}
+Las inyecciones externas de masa al sistema se modelan como constantes exógenas. Acorde al supuesto de escasez de donaciones, el espacio es nulo excepto en el origen temporal $t=1$:
+\begin{equation}
+    \delta_{1,1} = 50 \text{ (kg Arroz)}, \quad \delta_{2,1} = 50 \text{ (kg Frijol)}
+\end{equation}
+Para cualquier otro par $(i,t)$, $\delta_{i,t} = 0$.
+
+
+\section{Variables de Decisión}
+
+Para que el modelo posea grados de libertad y pueda mapear un isomorfismo hacia la solución óptima, definimos las siguientes variables endógenas. Estas variables representan las dimensiones de nuestro hiperespacio de búsqueda.
+
+\subsection{Variables Enteras}
+\begin{itemize}
+    \item \textbf{Producción Culinaria ($z_{m,t,c}$):} Define la cantidad de porciones del platillo $m \in M$ a preparar en el día $t \in T$ para el tiempo de comida $c \in C$. Pertenece al espacio de los enteros no negativos para evitar la partición física de los platillos.
+    \begin{equation}
+        z_{m,t,c} \in \mathbb{Z}^{+} \cup \{0\} \quad \forall m, \forall t, \forall c
+    \end{equation}
+
+    \item \textbf{Vector de Lotes de Compra ($y_{i,t}$):} Define la cantidad de empaques o lotes comerciales del insumo $i \in I$ que se adquieren en el día $t \in T$.
+    \begin{equation}
+        y_{i,t} \in \mathbb{Z}^{+} \cup \{0\} \quad \forall i, \forall t
+    \end{equation}
+\end{itemize}
+
+\subsection{Variables Continuas}
+Dado que los insumos pueden fraccionarse al cocinarse (ej. 0.15 kg de arroz), el flujo de masa se modela sobre el campo de los números reales.
+\begin{itemize}
+    \item \textbf{Vector de Compras Netas ($x_{i,t}$):} Volumen o masa exacta adquirida del insumo $i$ en el día $t$.
+    \begin{equation}
+        x_{i,t} \in \mathbb{R}^{+} \cup \{0\} \quad \forall i, \forall t
+    \end{equation}
+
+    \item \textbf{Vector de Consumo Interno ($\gamma_{i,t}$):} Cantidad agregada del insumo $i$ destruida (transformada) por la cocina durante el día $t$.
+    \begin{equation}
+        \gamma_{i,t} \in \mathbb{R}^{+} \cup \{0\} \quad \forall i, \forall t
+    \end{equation}
+
+    \item \textbf{Variable de Estado del Sistema ($\mu_{i,t}$):} Nivel de inventario del insumo $i$ al final del periodo $t$. Representa la memoria del sistema dinámico discreto.
+    \begin{equation}
+        \mu_{i,t} \in \mathbb{R}^{+} \cup \{0\} \quad \forall i, \forall t
+    \end{equation}
+\end{itemize}
+
+\section{Función Objetivo}
+
+Buscamos optimizar la asignación de recursos minimizando el funcional de costo, esto es equivalente a encontrar el punto extremo en la frontera del poliedro convexo $\mathcal{F}$ que minimice el producto interno entre el vector estático de precios $\mathbf{c}$ y el campo vectorial de compras $\mathbf{x}$.
+
+Sea $\Phi$ el costo total proyectado para el horizonte temporal $T$, la formulación es:
+
+\begin{equation}
+    \min \Phi = \sum_{t \in T} \sum_{i \in I} c_i \cdot x_{i,t}
+\end{equation}
+
+Esta minimización de la norma ponderada $L_1$ del hiperplano de compras asegura que la organización adquiera estrictamente lo necesario para sostener el flujo de masa demandado, evitando compras superfluas.
+
+\section{Dinámica de Sistemas}
+
+El espacio factible $\mathcal{F}$ queda unívocamente definido por la intersección de los siguientes hiperplanos y ecuaciones de flujo:
+
+\subsection{Satisfacción del Requerimiento de Masa (Demanda)}
+Para garantizar que el flujo de salida cubra las necesidades poblacionales, proyectamos la suma de platillos sobre la cota mínima de demanda para cada estrato temporal y de comida:
+\begin{equation}
+    \sum_{m \in M} z_{m,t,c} \ge d_{t,c} \quad \forall t \in T, \forall c \in C
+\end{equation}
+
+\subsection{Operador de Filtro (Apego al Calendario)}
+El espacio de decisiones de preparación $z_{m,t,c}$ debe colapsar a cero a menos que el tensor ortogonal de calendario $\alpha_{m,t,c}$ lo permita. Utilizamos una constante $\mathcal{M}$ suficientemente grande (Big-M) como cota superior:
+\begin{equation}
+    z_{m,t,c} \le \mathcal{M} \cdot \alpha_{m,t,c} \quad \forall m \in M, \forall t \in T, \forall c \in C
+\end{equation}
+\textit{Nota Teórica: Dado que $d_{t,c} = 100$, podemos fijar $\mathcal{M} = 150$ para mantener la matriz jacobiana computacionalmente estable.}
+
+\subsection{Relacion Menú $\to$ Insumo}
+La variable continua de consumo interno es el resultado del producto interno entre el operador de recetas $a_{i,m}$ y el campo tensorial de producción $z$:
+\begin{equation}
+    \gamma_{i,t} = \sum_{c \in C} \sum_{m \in M} a_{i,m} \cdot z_{m,t,c} \quad \forall i \in I, \forall t \in T
+\end{equation}
+
+\subsection{Lotes de Compra}
+El vector continuo de compras $x_{i,t}$ se restringe a existir únicamente en múltiplos exactos de las presentaciones comerciales dictadas por $\ell_i$:
+\begin{equation}
+    x_{i,t} = \ell_i \cdot y_{i,t} \quad \forall i \in I, \forall t \in T
+\end{equation}
+
+\subsection{Límite Presupuestal}
+Para modelar la escasez de recursos, acotamos la norma de costo total al escalar del presupuesto $B$:
+\begin{equation}
+    \sum_{t \in T} \sum_{i \in I} c_i \cdot x_{i,t} \le B
+\end{equation}
+
+\subsection{Dinámica de Continuidad Inventario}
+Definimos el Problema de Cauchy (estado inicial) para anclar la variedad temporal en $t=0$:
+\begin{equation}
+    \mu_{i,0} = I_{i,0} \quad \forall i \in I
+\end{equation}
+
+La conservación de masa entre subespacios temporales adyacentes (diferencial discreto) se modela sumando las fuentes (Compras y Donaciones) y restando los sumideros (Consumo):
+\begin{equation}
+    \mu_{i,t} = \mu_{i,t-1} + x_{i,t} + \delta_{i,t} - \gamma_{i,t} \quad \forall i \in I, \forall t \in T
+\end{equation}
+
+\subsection{Condición de Frontera Terminal}
+Para mitigar el efecto de fin de horizonte y garantizar la continuidad operativa en la subsecuente iteración temporal, acotamos inferiormente la variedad de estado en el límite superior del horizonte ($t=7$). Se exige un inventario residual igual al inventario inicial:
+\begin{equation}
+    \mu_{i,7} \ge I_{i,0} \quad \forall i \in I
+\end{equation}
+
+\section{Conclusión Analítica}
+El sistema formulado constituye un modelo MILP algebraicamente cerrado. Al relajar el subíndice de caducidad y eliminar la cota superior del almacén físico, hemos transformado un problema altamente no lineal en un difeomorfismo manejable que garantiza el hallazgo de un mínimo global estricto mediante algoritmos de ramificación y acotamiento (Branch \& Bound), proveyendo a Casa Monarca de una herramienta determinista para maximizar su impacto humanitario bajo recursos finitos.
+
+\end{document}
