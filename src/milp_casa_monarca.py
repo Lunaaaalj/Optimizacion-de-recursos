@@ -255,237 +255,221 @@ BIG_M = 150  # constante Big-M para el filtro de calendario
 # MODELO PYOMO
 # ──────────────────────────────────────────────────────────────────────────────
 
-model = pyo.ConcreteModel(name="CasaMonarca_MILP")
+if __name__ == "__main__":
+    model = pyo.ConcreteModel(name="CasaMonarca_MILP")
 
-# Conjuntos
-model.I = pyo.Set(initialize=range(1, 31))  # Insumos
-model.T = pyo.Set(initialize=range(1, 8))  # Días
-model.C = pyo.Set(initialize=range(1, 4))  # Tiempos de comida
-model.M = pyo.Set(initialize=range(1, 13))  # Platillos
+    # Conjuntos
+    model.I = pyo.Set(initialize=range(1, 31))  # Insumos
+    model.T = pyo.Set(initialize=range(1, 8))  # Días
+    model.C = pyo.Set(initialize=range(1, 4))  # Tiempos de comida
+    model.M = pyo.Set(initialize=range(1, 13))  # Platillos
 
-# Parámetros
-model.c_cost = pyo.Param(model.I, initialize=cost)
-model.l = pyo.Param(model.I, initialize=lot_size)
-model.B = pyo.Param(initialize=B)
-model.d = pyo.Param(model.T, model.C, initialize=demand)
-model.I0 = pyo.Param(model.I, initialize=initial_inv)
-model.delta = pyo.Param(model.I, model.T, initialize=donation)
-model.alpha = pyo.Param(model.M, model.T, model.C, initialize=alpha)
-model.a = pyo.Param(model.I, model.M, initialize=a)
+    # Parámetros
+    model.c_cost = pyo.Param(model.I, initialize=cost)
+    model.l = pyo.Param(model.I, initialize=lot_size)
+    model.B = pyo.Param(initialize=B)
+    model.d = pyo.Param(model.T, model.C, initialize=demand)
+    model.I0 = pyo.Param(model.I, initialize=initial_inv)
+    model.delta = pyo.Param(model.I, model.T, initialize=donation)
+    model.alpha = pyo.Param(model.M, model.T, model.C, initialize=alpha)
+    model.a = pyo.Param(model.I, model.M, initialize=a)
 
-# Variables de decisión
-model.z = pyo.Var(
-    model.M, model.T, model.C, domain=pyo.NonNegativeIntegers
-)  # porciones
-model.y = pyo.Var(model.I, model.T, domain=pyo.NonNegativeIntegers)  # lotes
-model.x = pyo.Var(model.I, model.T, domain=pyo.NonNegativeReals)  # compras netas
-model.gamma = pyo.Var(model.I, model.T, domain=pyo.NonNegativeReals)  # consumo interno
-model.mu = pyo.Var(model.I, model.T, domain=pyo.NonNegativeReals)  # inventario final
+    # Variables de decisión
+    model.z = pyo.Var(
+        model.M, model.T, model.C, domain=pyo.NonNegativeIntegers
+    )  # porciones
+    model.y = pyo.Var(model.I, model.T, domain=pyo.NonNegativeIntegers)  # lotes
+    model.x = pyo.Var(model.I, model.T, domain=pyo.NonNegativeReals)  # compras netas
+    model.gamma = pyo.Var(model.I, model.T, domain=pyo.NonNegativeReals)  # consumo interno
+    model.mu = pyo.Var(model.I, model.T, domain=pyo.NonNegativeReals)  # inventario final
 
-# ── Función objetivo ──────────────────────────────────────────────────────────
-model.obj = pyo.Objective(
-    expr=pyo.quicksum(
-        model.c_cost[i] * model.x[i, t] for i in model.I for t in model.T
-    ),
-    sense=pyo.minimize,
-)
-
-# ── Restricciones ─────────────────────────────────────────────────────────────
-
-
-# (8) Satisfacción de demanda
-def demand_rule(mdl, t, c):
-    return pyo.quicksum(mdl.z[m, t, c] for m in mdl.M) >= mdl.d[t, c]
-
-
-model.demand_con = pyo.Constraint(model.T, model.C, rule=demand_rule)
-
-
-# (9) Apego al calendario – Filtro Big-M
-def calendar_rule(mdl, m, t, c):
-    return mdl.z[m, t, c] <= BIG_M * mdl.alpha[m, t, c]
-
-
-model.calendar_con = pyo.Constraint(model.M, model.T, model.C, rule=calendar_rule)
-
-
-# (10) Relación menú → insumo (consumo interno)
-def consumption_rule(mdl, i, t):
-    return mdl.gamma[i, t] == pyo.quicksum(
-        mdl.a[i, m] * mdl.z[m, t, c] for c in mdl.C for m in mdl.M
+    # ── Función objetivo ──────────────────────────────────────────────────────
+    model.obj = pyo.Objective(
+        expr=pyo.quicksum(
+            model.c_cost[i] * model.x[i, t] for i in model.I for t in model.T
+        ),
+        sense=pyo.minimize,
     )
 
+    # ── Restricciones ─────────────────────────────────────────────────────────
 
-model.consumption_con = pyo.Constraint(model.I, model.T, rule=consumption_rule)
+    # (8) Satisfacción de demanda
+    def demand_rule(mdl, t, c):
+        return pyo.quicksum(mdl.z[m, t, c] for m in mdl.M) >= mdl.d[t, c]
 
+    model.demand_con = pyo.Constraint(model.T, model.C, rule=demand_rule)
 
-# (11) Lotes de compra
-def lots_rule(mdl, i, t):
-    return mdl.x[i, t] == mdl.l[i] * mdl.y[i, t]
+    # (9) Apego al calendario – Filtro Big-M
+    def calendar_rule(mdl, m, t, c):
+        return mdl.z[m, t, c] <= BIG_M * mdl.alpha[m, t, c]
 
+    model.calendar_con = pyo.Constraint(model.M, model.T, model.C, rule=calendar_rule)
 
-model.lots_con = pyo.Constraint(model.I, model.T, rule=lots_rule)
+    # (10) Relación menú → insumo (consumo interno)
+    def consumption_rule(mdl, i, t):
+        return mdl.gamma[i, t] == pyo.quicksum(
+            mdl.a[i, m] * mdl.z[m, t, c] for c in mdl.C for m in mdl.M
+        )
 
-# (12) Límite presupuestal
-model.budget_con = pyo.Constraint(
-    expr=pyo.quicksum(model.c_cost[i] * model.x[i, t] for i in model.I for t in model.T)
-    <= model.B
-)
+    model.consumption_con = pyo.Constraint(model.I, model.T, rule=consumption_rule)
 
+    # (11) Lotes de compra
+    def lots_rule(mdl, i, t):
+        return mdl.x[i, t] == mdl.l[i] * mdl.y[i, t]
 
-# (13) + (14) Inventario inicial + balance de inventario
-def inventory_rule(mdl, i, t):
-    prev = mdl.I0[i] if t == 1 else mdl.mu[i, t - 1]
-    return mdl.mu[i, t] == prev + mdl.x[i, t] + mdl.delta[i, t] - mdl.gamma[i, t]
+    model.lots_con = pyo.Constraint(model.I, model.T, rule=lots_rule)
 
+    # (12) Límite presupuestal
+    model.budget_con = pyo.Constraint(
+        expr=pyo.quicksum(model.c_cost[i] * model.x[i, t] for i in model.I for t in model.T)
+        <= model.B
+    )
 
-model.inventory_con = pyo.Constraint(model.I, model.T, rule=inventory_rule)
+    # (13) + (14) Inventario inicial + balance de inventario
+    def inventory_rule(mdl, i, t):
+        prev = mdl.I0[i] if t == 1 else mdl.mu[i, t - 1]
+        return mdl.mu[i, t] == prev + mdl.x[i, t] + mdl.delta[i, t] - mdl.gamma[i, t]
 
+    model.inventory_con = pyo.Constraint(model.I, model.T, rule=inventory_rule)
 
-# (15) Condición de frontera terminal
-def terminal_rule(mdl, i):
-    return mdl.mu[i, 7] >= mdl.I0[i]
+    # (15) Condición de frontera terminal
+    def terminal_rule(mdl, i):
+        return mdl.mu[i, 7] >= mdl.I0[i]
 
+    model.terminal_con = pyo.Constraint(model.I, rule=terminal_rule)
 
-model.terminal_con = pyo.Constraint(model.I, rule=terminal_rule)
+    # ──────────────────────────────────────────────────────────────────────────
+    # RESOLUCIÓN
+    # ──────────────────────────────────────────────────────────────────────────
 
-# ──────────────────────────────────────────────────────────────────────────────
-# RESOLUCIÓN
-# ──────────────────────────────────────────────────────────────────────────────
+    solver = pyo.SolverFactory("glpk")
+    if not solver.available():
+        raise RuntimeError("GLPK no está disponible. Instálalo con: brew install glpk")
 
-solver = pyo.SolverFactory("glpk")
-if not solver.available():
-    raise RuntimeError("GLPK no está disponible. Instálalo con: brew install glpk")
+    print("Resolviendo el modelo MILP...")
+    results = solver.solve(model, tee=True)
 
-print("Resolviendo el modelo MILP...")
-results = solver.solve(model, tee=True)
+    # ──────────────────────────────────────────────────────────────────────────
+    # RESULTADOS → TXT
+    # ──────────────────────────────────────────────────────────────────────────
 
-# ──────────────────────────────────────────────────────────────────────────────
-# RESULTADOS → TXT
-# ──────────────────────────────────────────────────────────────────────────────
+    timestap = datetime.now().strftime("%Y%m%d_%H%M%S")
+    outputname = f"results_{timestap}.txt"
+    directory = "./OUTPUT/"
 
+    status = results.solver.termination_condition
+    solver_stat = results.solver.status
 
-timestap = datetime.now().strftime("%Y%m%d_%H%M%S")
-outputname = f"results_{timestap}.txt"
-directory = "./OUTPUT/"
+    with open(directory + outputname, "w", encoding="utf-8") as f:
 
-status = results.solver.termination_condition
-solver_stat = results.solver.status
+        def w(line=""):
+            f.write(line + "\n")
 
-# output_path = os.path.join(os.path.dirname(__file__), "resultados_milp.txt")
-
-with open(directory + outputname, "w", encoding="utf-8") as f:
-
-    def w(line=""):
-        f.write(line + "\n")
-
-    w("=" * 70)
-    w("  MILP – Optimización de Flujos Alimentarios en Casa Monarca")
-    w("=" * 70)
-    w(f"  Estado del solver  : {solver_stat}")
-    w(f"  Condición de término: {status}")
-
-    if str(status) not in ("optimal", "feasible"):
-        w("\n[!] No se encontró solución óptima. Revisar datos o solver.")
-    else:
-        total_cost = pyo.value(model.obj)
-        w(f"  Costo total óptimo : $ {total_cost:,.2f} MXN")
         w("=" * 70)
+        w("  MILP – Optimización de Flujos Alimentarios en Casa Monarca")
+        w("=" * 70)
+        w(f"  Estado del solver  : {solver_stat}")
+        w(f"  Condición de término: {status}")
 
-        # ── Plan de comidas por día ──────────────────────────────────────────
-        w("\n" + "─" * 70)
-        w("  PLAN DE COMIDAS (porciones preparadas z_{m,t,c})")
-        w("─" * 70)
-        for t in model.T:
-            w(f"\n  {day_names[t]}")
-            for c in model.C:
-                w(f"    {meal_names[c]}:")
-                any_dish = False
-                for m in model.M:
-                    val = pyo.value(model.z[m, t, c])
-                    if val is not None and val > 0.5:
-                        w(
-                            f"      Platillo {m:2d} ({dish_names[m]}): {int(round(val))} porciones"
-                        )
-                        any_dish = True
-                if not any_dish:
-                    w("      (ninguno)")
+        if str(status) not in ("optimal", "feasible"):
+            w("\n[!] No se encontró solución óptima. Revisar datos o solver.")
+        else:
+            total_cost = pyo.value(model.obj)
+            w(f"  Costo total óptimo : $ {total_cost:,.2f} MXN")
+            w("=" * 70)
 
-        # ── Compras por día ──────────────────────────────────────────────────
-        w("\n" + "─" * 70)
-        w("  COMPRAS DIARIAS (x_{i,t}  y  y_{i,t} lotes)")
-        w("─" * 70)
-        daily_costs = {}
-        for t in model.T:
-            purchases = []
-            day_cost = 0.0
-            for i in model.I:
-                xval = pyo.value(model.x[i, t])
-                yval = pyo.value(model.y[i, t])
-                if xval is not None and xval > 1e-6:
-                    spend = cost[i] * xval
-                    day_cost += spend
-                    purchases.append((i, xval, int(round(yval)), spend))
-            daily_costs[t] = day_cost
-            w(f"\n  {day_names[t]}  (gasto del día: $ {day_cost:,.2f} MXN)")
-            if purchases:
-                w(
-                    f"    {'Insumo':<30s} {'Cantidad':>10s}  {'Lotes':>6s}  {'Costo ($MXN)':>13s}"
-                )
-                w("    " + "-" * 64)
-                for i, xval, yval, spend in purchases:
+            # ── Plan de comidas por día ──────────────────────────────────────
+            w("\n" + "─" * 70)
+            w("  PLAN DE COMIDAS (porciones preparadas z_{m,t,c})")
+            w("─" * 70)
+            for t in model.T:
+                w(f"\n  {day_names[t]}")
+                for c in model.C:
+                    w(f"    {meal_names[c]}:")
+                    any_dish = False
+                    for m in model.M:
+                        val = pyo.value(model.z[m, t, c])
+                        if val is not None and val > 0.5:
+                            w(
+                                f"      Platillo {m:2d} ({dish_names[m]}): {int(round(val))} porciones"
+                            )
+                            any_dish = True
+                    if not any_dish:
+                        w("      (ninguno)")
+
+            # ── Compras por día ──────────────────────────────────────────────
+            w("\n" + "─" * 70)
+            w("  COMPRAS DIARIAS (x_{i,t}  y  y_{i,t} lotes)")
+            w("─" * 70)
+            daily_costs = {}
+            for t in model.T:
+                purchases = []
+                day_cost = 0.0
+                for i in model.I:
+                    xval = pyo.value(model.x[i, t])
+                    yval = pyo.value(model.y[i, t])
+                    if xval is not None and xval > 1e-6:
+                        spend = cost[i] * xval
+                        day_cost += spend
+                        purchases.append((i, xval, int(round(yval)), spend))
+                daily_costs[t] = day_cost
+                w(f"\n  {day_names[t]}  (gasto del día: $ {day_cost:,.2f} MXN)")
+                if purchases:
                     w(
-                        f"    {insumo_names[i]:<30s} {xval:>10.2f}  {yval:>6d}  {spend:>13,.2f}"
+                        f"    {'Insumo':<30s} {'Cantidad':>10s}  {'Lotes':>6s}  {'Costo ($MXN)':>13s}"
                     )
-            else:
-                w("    (sin compras este día)")
+                    w("    " + "-" * 64)
+                    for i, xval, yval, spend in purchases:
+                        w(
+                            f"    {insumo_names[i]:<30s} {xval:>10.2f}  {yval:>6d}  {spend:>13,.2f}"
+                        )
+                else:
+                    w("    (sin compras este día)")
 
-        # ── Inventario final por día ─────────────────────────────────────────
-        w("\n" + "─" * 70)
-        w("  INVENTARIO AL FINAL DE CADA DÍA (μ_{i,t})")
-        w("─" * 70)
-        w(f"\n  {'Insumo':<30s}" + "".join(f"  {day_names[t]:>10s}" for t in model.T))
-        w("  " + "-" * (30 + 12 * 7))
-        for i in model.I:
-            row = f"  {insumo_names[i]:<30s}"
-            has_nonzero = False
+            # ── Inventario final por día ─────────────────────────────────────
+            w("\n" + "─" * 70)
+            w("  INVENTARIO AL FINAL DE CADA DÍA (μ_{i,t})")
+            w("─" * 70)
+            w(f"\n  {'Insumo':<30s}" + "".join(f"  {day_names[t]:>10s}" for t in model.T))
+            w("  " + "-" * (30 + 12 * 7))
+            for i in model.I:
+                row = f"  {insumo_names[i]:<30s}"
+                has_nonzero = False
+                for t in model.T:
+                    val = pyo.value(model.mu[i, t])
+                    val = val if val is not None else 0.0
+                    row += f"  {val:>10.2f}"
+                    if val > 1e-6:
+                        has_nonzero = True
+                if has_nonzero or initial_inv.get(i, 0) > 0:
+                    w(row)
+
+            # ── Consumo interno por día ──────────────────────────────────────
+            w("\n" + "─" * 70)
+            w("  CONSUMO INTERNO DIARIO (γ_{i,t})")
+            w("─" * 70)
+            w(f"\n  {'Insumo':<30s}" + "".join(f"  {day_names[t]:>10s}" for t in model.T))
+            w("  " + "-" * (30 + 12 * 7))
+            for i in model.I:
+                row = f"  {insumo_names[i]:<30s}"
+                has_nonzero = False
+                for t in model.T:
+                    val = pyo.value(model.gamma[i, t])
+                    val = val if val is not None else 0.0
+                    row += f"  {val:>10.3f}"
+                    if val > 1e-6:
+                        has_nonzero = True
+                if has_nonzero:
+                    w(row)
+
+            # ── Resumen de costos ────────────────────────────────────────────
+            w("\n" + "─" * 70)
+            w("  RESUMEN DE COSTOS")
+            w("─" * 70)
             for t in model.T:
-                val = pyo.value(model.mu[i, t])
-                val = val if val is not None else 0.0
-                row += f"  {val:>10.2f}"
-                if val > 1e-6:
-                    has_nonzero = True
-            if has_nonzero or initial_inv.get(i, 0) > 0:
-                w(row)
-
-        # ── Consumo interno por día ──────────────────────────────────────────
-        w("\n" + "─" * 70)
-        w("  CONSUMO INTERNO DIARIO (γ_{i,t})")
-        w("─" * 70)
-        w(f"\n  {'Insumo':<30s}" + "".join(f"  {day_names[t]:>10s}" for t in model.T))
-        w("  " + "-" * (30 + 12 * 7))
-        for i in model.I:
-            row = f"  {insumo_names[i]:<30s}"
-            has_nonzero = False
-            for t in model.T:
-                val = pyo.value(model.gamma[i, t])
-                val = val if val is not None else 0.0
-                row += f"  {val:>10.3f}"
-                if val > 1e-6:
-                    has_nonzero = True
-            if has_nonzero:
-                w(row)
-
-        # ── Resumen de costos ────────────────────────────────────────────────
-        w("\n" + "─" * 70)
-        w("  RESUMEN DE COSTOS")
-        w("─" * 70)
-        for t in model.T:
-            w(f"  {day_names[t]:<12s}: $ {daily_costs[t]:>10,.2f} MXN")
-        w("  " + "-" * 30)
-        w(f"  {'TOTAL':<12s}: $ {total_cost:>10,.2f} MXN")
-        w(f"  Presupuesto   : $ {B:>10,.2f} MXN")
-        w(f"  Remanente     : $ {B - total_cost:>10,.2f} MXN")
-        w("=" * 70)
-
-# print(f"\nResultados escritos en: {output_path}")
+                w(f"  {day_names[t]:<12s}: $ {daily_costs[t]:>10,.2f} MXN")
+            w("  " + "-" * 30)
+            w(f"  {'TOTAL':<12s}: $ {total_cost:>10,.2f} MXN")
+            w(f"  Presupuesto   : $ {B:>10,.2f} MXN")
+            w(f"  Remanente     : $ {B - total_cost:>10,.2f} MXN")
+            w("=" * 70)

@@ -1,0 +1,184 @@
+======================================================================
+  MILP – Optimización de Flujos Alimentarios en Casa Monarca
+======================================================================
+  Estado del solver  : ok
+  Condición de término: optimal
+  Costo total óptimo : $ 25,995.10 MXN
+======================================================================
+
+──────────────────────────────────────────────────────────────────────
+  PLAN DE COMIDAS (porciones preparadas z_{m,t,c})
+──────────────────────────────────────────────────────────────────────
+
+  Lunes
+    Desayuno:
+      Platillo  1 (Huevo con chorizo): 100 porciones
+    Comida:
+      Platillo  9 (Pollo frito/pasta): 100 porciones
+    Cena:
+      Platillo 10 (Sándwich de pavo): 100 porciones
+
+  Martes
+    Desayuno:
+      Platillo  5 (Huevo con papa): 100 porciones
+    Comida:
+      Platillo 12 (Guiso de res): 100 porciones
+    Cena:
+      Platillo  4 (Tortas jamón/queso): 100 porciones
+
+  Miércoles
+    Desayuno:
+      Platillo  2 (Huevo estrellado): 100 porciones
+    Comida:
+      Platillo 11 (Milanesa de res): 100 porciones
+    Cena:
+      Platillo  8 (Ensalada de atún): 100 porciones
+
+  Jueves
+    Desayuno:
+      Platillo  3 (Huevo con jamón): 100 porciones
+    Comida:
+      Platillo  9 (Pollo frito/pasta): 100 porciones
+    Cena:
+      Platillo 10 (Sándwich de pavo): 100 porciones
+
+  Viernes
+    Desayuno:
+      Platillo  7 (Huevo/salchicha): 100 porciones
+    Comida:
+      Platillo 12 (Guiso de res): 100 porciones
+    Cena:
+      Platillo  4 (Tortas jamón/queso): 100 porciones
+
+  Sábado
+    Desayuno:
+      Platillo  6 (Cereal con leche): 100 porciones
+    Comida:
+      Platillo  8 (Ensalada de atún): 100 porciones
+    Cena:
+      Platillo 10 (Sándwich de pavo): 100 porciones
+
+  Domingo
+    Desayuno:
+      Platillo  1 (Huevo con chorizo): 100 porciones
+    Comida:
+      Platillo 11 (Milanesa de res): 100 porciones
+    Cena:
+      Platillo  4 (Tortas jamón/queso): 100 porciones
+
+──────────────────────────────────────────────────────────────────────
+  COMPRAS DIARIAS (x_{i,t}  y  y_{i,t} lotes)
+──────────────────────────────────────────────────────────────────────
+
+  Lunes  (gasto del día: $ 25,755.10 MXN)
+    Insumo                           Cantidad   Lotes   Costo ($MXN)
+    ----------------------------------------------------------------
+    Tortilla (kg)                      150.00     150       3,750.00
+    Tomate (kg)                         28.00      28         840.00
+    Cebolla (kg)                         6.00       6         150.00
+    Papa (kg)                           25.00      25         875.00
+    Zanahoria (kg)                       3.00       3          60.00
+    Lechuga (pz)                        10.00      10         200.00
+    Aceite (L)                          12.00      12         456.00
+    Huevo (unidad)                     870.00      29       2,462.10
+    Leche (L)                           25.00      25         700.00
+    Café (kg)                            5.00       5         750.00
+    Agua (L)                           360.00     360         900.00
+    Galletas (paq)                      20.00      20         300.00
+    Pan (pz)                          1000.00    1000       3,000.00
+    Atún (lata)                        100.00     100       2,000.00
+    Pollo (kg)                          24.00      24       1,632.00
+    Res (kg)                            40.00      40       7,200.00
+    Cereal (caja)                        8.00       8         480.00
+
+  Martes  (gasto del día: $ 240.00 MXN)
+    Insumo                           Cantidad   Lotes   Costo ($MXN)
+    ----------------------------------------------------------------
+    Zanahoria (kg)                       6.00       6         120.00
+    Pasta (paq)                         12.00      12         120.00
+
+  Miércoles  (gasto del día: $ 0.00 MXN)
+    (sin compras este día)
+
+  Jueves  (gasto del día: $ 0.00 MXN)
+    (sin compras este día)
+
+  Viernes  (gasto del día: $ 0.00 MXN)
+    (sin compras este día)
+
+  Sábado  (gasto del día: $ 0.00 MXN)
+    (sin compras este día)
+
+  Domingo  (gasto del día: $ 0.00 MXN)
+    (sin compras este día)
+
+──────────────────────────────────────────────────────────────────────
+  INVENTARIO AL FINAL DE CADA DÍA (μ_{i,t})
+──────────────────────────────────────────────────────────────────────
+
+  Insumo                               Lunes      Martes   Miércoles      Jueves     Viernes      Sábado     Domingo
+  ------------------------------------------------------------------------------------------------------------------
+  Arroz (kg)                          150.00      150.00      150.00      150.00      150.00      150.00      150.00
+  Frijol (kg)                         377.00      374.00      371.00      368.00      365.00      365.00      362.00
+  Tortilla (kg)                       132.00       99.00       84.00       66.00       33.00       33.00        0.00
+  Tomate (kg)                          23.00       18.00       16.00       11.00        6.00        2.00        0.00
+  Cebolla (kg)                          5.00        4.00        4.00        3.00        2.00        1.00        0.00
+  Papa (kg)                            21.00       12.00       12.00        8.00        4.00        0.00        0.00
+  Zanahoria (kg)                        0.00        6.00        6.00        3.00        3.00        0.00        0.00
+  Lechuga (pz)                         10.00       10.00        5.00        5.00        5.00        0.00        0.00
+  Pasta (paq)                         294.00      306.00      306.00      300.00      300.00      300.00      300.00
+  Aceite (L)                          101.50      100.50       98.00       95.50       94.50       94.50       92.00
+  Huevo (unidad)                      750.00      580.00      460.00      340.00      170.00      170.00        0.00
+  Leche (L)                            32.50       32.50       32.50       32.50       32.50        7.50        7.50
+  Café (kg)                             4.50        3.50        3.00        2.50        1.50        1.00        0.00
+  Agua (L)                            280.00      240.00      200.00      120.00       80.00       40.00        0.00
+  Azúcar (kg)                         156.00      156.00      156.00      156.00      156.00      156.00      156.00
+  Galletas (paq)                       55.00       55.00       45.00       45.00       45.00       35.00       35.00
+  Pan (pz)                            800.00      700.00      600.00      400.00      300.00      100.00        0.00
+  Atún (lata)                         169.00      169.00      119.00      119.00      119.00       69.00       69.00
+  Pollo (kg)                           12.00       12.00       12.00        0.00        0.00        0.00        0.00
+  Res (kg)                             40.00       30.00       20.00       20.00       10.00       10.00        0.00
+  Harina Maseca (kg)                  100.00      100.00      100.00      100.00      100.00      100.00      100.00
+  Cereal (caja)                         8.00        8.00        8.00        8.00        8.00        0.00        0.00
+
+──────────────────────────────────────────────────────────────────────
+  CONSUMO INTERNO DIARIO (γ_{i,t})
+──────────────────────────────────────────────────────────────────────
+
+  Insumo                               Lunes      Martes   Miércoles      Jueves     Viernes      Sábado     Domingo
+  ------------------------------------------------------------------------------------------------------------------
+  Frijol (kg)                          3.000       3.000       3.000       3.000       3.000       0.000       3.000
+  Tortilla (kg)                       18.000      33.000      15.000      18.000      33.000       0.000      33.000
+  Tomate (kg)                          5.000       5.000       2.000       5.000       5.000       4.000       2.000
+  Cebolla (kg)                         1.000       1.000       0.000       1.000       1.000       1.000       1.000
+  Papa (kg)                            4.000       9.000       0.000       4.000       4.000       4.000       0.000
+  Zanahoria (kg)                       3.000       0.000       0.000       3.000       0.000       3.000       0.000
+  Lechuga (pz)                         0.000       0.000       5.000       0.000       0.000       5.000       0.000
+  Pasta (paq)                          6.000       0.000       0.000       6.000       0.000       0.000       0.000
+  Aceite (L)                           2.500       1.000       2.500       2.500       1.000       0.000       2.500
+  Huevo (unidad)                     120.000     170.000     120.000     120.000     170.000       0.000     170.000
+  Leche (L)                            0.000       0.000       0.000       0.000       0.000      25.000       0.000
+  Café (kg)                            0.500       1.000       0.500       0.500       1.000       0.500       1.000
+  Agua (L)                            80.000      40.000      40.000      80.000      40.000      40.000      40.000
+  Galletas (paq)                       0.000       0.000      10.000       0.000       0.000      10.000       0.000
+  Pan (pz)                           200.000     100.000     100.000     200.000     100.000     200.000     100.000
+  Atún (lata)                          0.000       0.000      50.000       0.000       0.000      50.000       0.000
+  Pollo (kg)                          12.000       0.000       0.000      12.000       0.000       0.000       0.000
+  Res (kg)                             0.000      10.000      10.000       0.000      10.000       0.000      10.000
+  Cereal (caja)                        0.000       0.000       0.000       0.000       0.000       8.000       0.000
+
+──────────────────────────────────────────────────────────────────────
+  RESUMEN DE COSTOS
+──────────────────────────────────────────────────────────────────────
+  Lunes       : $  25,755.10 MXN
+  Martes      : $     240.00 MXN
+  Miércoles   : $       0.00 MXN
+  Jueves      : $       0.00 MXN
+  Viernes     : $       0.00 MXN
+  Sábado      : $       0.00 MXN
+  Domingo     : $       0.00 MXN
+  ------------------------------
+  TOTAL       : $  25,995.10 MXN
+  Presupuesto   : $  50,000.00 MXN
+  Remanente     : $  24,004.90 MXN
+======================================================================
