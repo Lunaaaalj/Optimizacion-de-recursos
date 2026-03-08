@@ -7,6 +7,7 @@ Ejecutar desde la raíz del proyecto:
 
 import sys
 import os
+from datetime import datetime
 
 # Permite importar módulos hermanos en src/
 sys.path.insert(0, os.path.dirname(__file__))
@@ -212,6 +213,108 @@ with st.expander("Calendario de comidas (platillo por día y tiempo)", expanded=
 
 st.divider()
 
+def _build_report_text(res: dict) -> str:
+    """Genera el reporte de resultados como texto plano (para descarga)."""
+    lines = []
+
+    def w(line=""):
+        lines.append(line)
+
+    w("=" * 70)
+    w("  MILP – Optimización de Flujos Alimentarios en Casa Monarca")
+    w("=" * 70)
+    w(f"  Estado del solver   : {res['status']}")
+    w(f"  Condición de término: {res['termination']}")
+
+    total_cost = res["total_cost"]
+    B = res["B"]
+    w(f"  Costo total óptimo  : $ {total_cost:,.2f} MXN")
+    w("=" * 70)
+
+    # Plan de comidas
+    w("\n" + "─" * 70)
+    w("  PLAN DE COMIDAS (porciones preparadas)")
+    w("─" * 70)
+    z_vals = res["z_vals"]
+    for t in range(1, 8):
+        w(f"\n  {DAY_NAMES[t]}")
+        for c in range(1, 4):
+            w(f"    {MEAL_NAMES[c]}:")
+            any_dish = False
+            for m in range(1, 13):
+                val = z_vals.get((m, t, c))
+                if val is not None and val > 0.5:
+                    from milp_model_core import DISH_NAMES as _DISH
+                    w(f"      {_DISH[m]}: {int(round(val))} porciones")
+                    any_dish = True
+            if not any_dish:
+                w("      (ninguno)")
+
+    # Compras diarias
+    w("\n" + "─" * 70)
+    w("  COMPRAS DIARIAS")
+    w("─" * 70)
+    x_vals = res["x_vals"]
+    y_vals = res["y_vals"]
+    cost = res["cost"]
+    daily_costs = res["daily_costs"]
+    for t in range(1, 8):
+        day_cost = daily_costs.get(t, 0.0)
+        w(f"\n  {DAY_NAMES[t]}  (gasto: $ {day_cost:,.2f} MXN)")
+        purchases = [
+            (i, x_vals[i, t], y_vals.get((i, t), 0), cost[i] * x_vals[i, t])
+            for i in range(1, 31)
+            if x_vals.get((i, t)) and x_vals[i, t] > 1e-6
+        ]
+        if purchases:
+            w(f"    {'Insumo':<30s} {'Cantidad':>10s}  {'Lotes':>6s}  {'Costo ($MXN)':>13s}")
+            w("    " + "-" * 64)
+            for i, xval, yval, spend in purchases:
+                w(f"    {INSUMO_NAMES[i]:<30s} {xval:>10.2f}  {int(round(yval)) if yval else 0:>6d}  {spend:>13,.2f}")
+        else:
+            w("    (sin compras este día)")
+
+    # Inventario
+    w("\n" + "─" * 70)
+    w("  INVENTARIO AL FINAL DE CADA DÍA")
+    w("─" * 70)
+    mu_vals = res["mu_vals"]
+    w(f"\n  {'Insumo':<30s}" + "".join(f"  {DAY_NAMES[t]:>10s}" for t in range(1, 8)))
+    w("  " + "-" * (30 + 12 * 7))
+    for i in range(1, 31):
+        row_vals = [mu_vals.get((i, t)) or 0.0 for t in range(1, 8)]
+        if any(v > 1e-6 for v in row_vals):
+            row = f"  {INSUMO_NAMES[i]:<30s}" + "".join(f"  {v:>10.2f}" for v in row_vals)
+            w(row)
+
+    # Consumo interno
+    w("\n" + "─" * 70)
+    w("  CONSUMO INTERNO DIARIO")
+    w("─" * 70)
+    gamma_vals = res["gamma_vals"]
+    w(f"\n  {'Insumo':<30s}" + "".join(f"  {DAY_NAMES[t]:>10s}" for t in range(1, 8)))
+    w("  " + "-" * (30 + 12 * 7))
+    for i in range(1, 31):
+        row_vals = [gamma_vals.get((i, t)) or 0.0 for t in range(1, 8)]
+        if any(v > 1e-6 for v in row_vals):
+            row = f"  {INSUMO_NAMES[i]:<30s}" + "".join(f"  {v:>10.3f}" for v in row_vals)
+            w(row)
+
+    # Resumen de costos
+    w("\n" + "─" * 70)
+    w("  RESUMEN DE COSTOS")
+    w("─" * 70)
+    for t in range(1, 8):
+        w(f"  {DAY_NAMES[t]:<12s}: $ {daily_costs.get(t, 0.0):>10,.2f} MXN")
+    w("  " + "-" * 30)
+    w(f"  {'TOTAL':<12s}: $ {total_cost:>10,.2f} MXN")
+    w(f"  Presupuesto   : $ {B:>10,.2f} MXN")
+    w(f"  Remanente     : $ {B - total_cost:>10,.2f} MXN")
+    w("=" * 70)
+
+    return "\n".join(lines)
+
+
 def collect_params():
     """Lee los widgets y devuelve el dict params para solve_milp."""
     # Costos
@@ -357,3 +460,14 @@ if "results" in st.session_state:
         with tab5:
             df_summary = make_cost_summary_df(res)
             st.dataframe(df_summary, use_container_width=True, hide_index=True)
+
+        st.divider()
+        txt_content = _build_report_text(res)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        st.download_button(
+            label="Descargar resultados (.txt)",
+            data=txt_content,
+            file_name=f"resultados_{timestamp}.txt",
+            mime="text/plain",
+            use_container_width=True,
+        )
