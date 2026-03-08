@@ -1,0 +1,273 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{longtable}
+
+\geometry{margin=2.5cm}
+
+\title{\textbf{Resumen del Modelo MILP}\\
+\large Optimización de Flujos Alimentarios en Casa Monarca}
+\author{Optimización Determinista}
+\date{Marzo 2026}
+
+\begin{document}
+
+\maketitle
+
+\section*{Tipo de Problema}
+
+Programación Lineal Entera Mixta (MILP) — sistema dinámico discreto determinista sobre un horizonte de planificación de 1 semana.
+
+% ─────────────────────────────────────────────
+\section{Conjuntos (Índices)}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{cll}
+\toprule
+\textbf{Conjunto} & \textbf{Descripción} & \textbf{Cardinalidad} \\
+\midrule
+$I$ & Insumos (materias primas) & 30 \\
+$T$ & Días (Lunes–Domingo) & 7 \\
+$C$ & Tiempos de comida (Desayuno, Comida, Cena) & 3 \\
+$M$ & Platillos disponibles & 12 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Los elementos de cada conjunto son:
+
+\begin{itemize}
+  \item $I = \{1:\text{Arroz},\; 2:\text{Frijol},\; 3:\text{Tortilla},\; 4:\text{Tomate},\; 5:\text{Cebolla},\; 6:\text{Papa},\; 7:\text{Zanahoria},\;$\\
+        $8:\text{Espinaca},\; 9:\text{Champiñones},\; 10:\text{Cilantro},\; 11:\text{Lechuga},\; 12:\text{Pasta},\; 13:\text{Chile},\;$\\
+        $14:\text{Aceite},\; 15:\text{Huevo},\; 16:\text{Sal},\; 17:\text{Leche},\; 18:\text{Café},\; 19:\text{Agua},\; 20:\text{Azúcar},\;$\\
+        $21:\text{Galletas},\; 22:\text{Pasteles},\; 23:\text{Pan},\; 24:\text{Atún},\; 25:\text{Pollo},\; 26:\text{Res},\;$\\
+        $27:\text{Refrescos},\; 28:\text{Saborizantes},\; 29:\text{Harina},\; 30:\text{Cereal}\}$
+
+  \item $T = \{1:\text{Lunes},\; 2:\text{Martes},\; 3:\text{Miércoles},\; 4:\text{Jueves},\; 5:\text{Viernes},\; 6:\text{Sábado},\; 7:\text{Domingo}\}$
+
+  \item $C = \{1:\text{Desayuno},\; 2:\text{Comida},\; 3:\text{Cena}\}$
+
+  \item $M = \{1:\text{Huevo con chorizo},\; 2:\text{Huevo estrellado},\; 3:\text{Huevo con jamón},\;$\\
+        $4:\text{Tortas jamón/queso},\; 5:\text{Huevo con papa},\; 6:\text{Cereal con leche},\;$\\
+        $7:\text{Huevo con salchicha},\; 8:\text{Ensalada de atún},\; 9:\text{Pollo frito/pasta},\;$\\
+        $10:\text{Sándwich de pavo},\; 11:\text{Milanesa de res},\; 12:\text{Guiso de res}\}$
+\end{itemize}
+
+% ─────────────────────────────────────────────
+\section{Parámetros}
+
+\subsection{Parámetros Económicos y Lotes de Compra}
+
+\begin{longtable}{clcc|clcc}
+\toprule
+$i$ & \textbf{Insumo} & $c_i$ (\$MXN) & $\ell_i$ & $i$ & \textbf{Insumo} & $c_i$ (\$MXN) & $\ell_i$ \\
+\midrule
+\endhead
+1  & Arroz (kg)           & 25.00  & 1  & 16 & Sal (kg)             & 20.00  & 1 \\
+2  & Frijol (kg)          & 38.00  & 1  & 17 & Leche (L)            & 28.00  & 1 \\
+3  & Tortilla (kg)        & 25.00  & 1  & 18 & Café (kg)            & 150.00 & 1 \\
+4  & Tomate (kg)          & 30.00  & 1  & 19 & Agua (L)             & 2.50   & 1 \\
+5  & Cebolla (kg)         & 25.00  & 1  & 20 & Azúcar (kg)          & 35.00  & 1 \\
+6  & Papa (kg)            & 35.00  & 1  & 21 & Galletas (paq)       & 15.00  & 1 \\
+7  & Zanahoria (kg)       & 20.00  & 1  & 22 & Pasteles (pz)        & 100.00 & 1 \\
+8  & Espinaca (kg)        & 30.00  & 1  & 23 & Pan (pz)             & 3.00   & 1 \\
+9  & Champiñones (kg)     & 90.00  & 1  & 24 & Atún (lata)          & 20.00  & 1 \\
+10 & Cilantro (kg)        & 50.00  & 1  & 25 & Pollo (kg)           & 68.00  & 1 \\
+11 & Lechuga (pz)         & 20.00  & 1  & 26 & Res (kg)             & 180.00 & 1 \\
+12 & Pasta (paq)          & 10.00  & 1  & 27 & Refrescos (L)        & 15.00  & 1 \\
+13 & Chile (kg)           & 40.00  & 1  & 28 & Saborizante (sobres) & 5.00   & 1 \\
+14 & Aceite (L)           & 38.00  & 1  & 29 & Harina Maseca (kg)   & 22.00  & 1 \\
+15 & Huevo (unidad)       & 2.83   & 30 & 30 & Cereal (caja)        & 60.00  & 1 \\
+\bottomrule
+\end{longtable}
+
+\subsection{Presupuesto y Demanda}
+
+\begin{itemize}
+  \item \textbf{Presupuesto global} $B = 50{,}000$ \$ MXN.
+  \item \textbf{Demanda constante} $d_{t,c} = 100$ porciones $\;\forall t \in T,\; \forall c \in C$.
+\end{itemize}
+
+\subsection{Inventario Inicial ($I_{i,0}$)}
+
+Estado físico de la bodega en $t = 0$. Los insumos no listados tienen $I_{i,0} = 0$.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{clc|clc}
+\toprule
+$i$ & \textbf{Insumo} & $I_{i,0}$ & $i$ & \textbf{Insumo} & $I_{i,0}$ \\
+\midrule
+1  & Arroz            & 100  & 14 & Aceite   & 92   \\
+2  & Frijol           & 330  & 17 & Leche    & 7.5  \\
+8  & Espinaca         & 0    & 20 & Azúcar   & 156  \\
+12 & Pasta/Spaguetti  & 300  & 21 & Galletas & 35   \\
+13 & Chile            & 0    & 24 & Atún     & 69   \\
+29 & Harina Maseca    & 100  & -- & (Resto)  & 0    \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Donaciones Programadas ($\delta_{i,t}$)}
+
+Inyecciones externas de masa al sistema. Solo no nulas en $t = 1$:
+\[
+  \delta_{1,1} = 50 \text{ kg (Arroz)}, \qquad \delta_{2,1} = 50 \text{ kg (Frijol)}
+\]
+Para cualquier otro par $(i,t)$: $\delta_{i,t} = 0$.
+
+\subsection{Calendario de Platillos ($\alpha_{m,t,c}$)}
+
+Tensor binario $\alpha \in \{0,1\}^{|M| \times |T| \times |C|}$ que indica si el platillo $m$ está disponible el día $t$ en la comida $c$.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{lccc}
+\toprule
+$t \in T$ (Día) & $c=1$ (Desayuno) & $c=2$ (Comida) & $c=3$ (Cena) \\
+\midrule
+1: Lunes      & $m=1$ (Huevo/chorizo)    & $m=9$  (Pollo/pasta)   & $m=10$ (Sándwich) \\
+2: Martes     & $m=5$ (Huevo/papa)       & $m=12$ (Guiso res)     & $m=4$  (Tortas)   \\
+3: Miércoles  & $m=2$ (Huevo estrellado) & $m=11$ (Milanesa res)  & $m=8$  (Ensalada atún) \\
+4: Jueves     & $m=3$ (Huevo/jamón)      & $m=9$  (Pollo/pasta)   & $m=10$ (Sándwich) \\
+5: Viernes    & $m=7$ (Huevo/salchicha)  & $m=12$ (Guiso res)     & $m=4$  (Tortas)   \\
+6: Sábado     & $m=6$ (Cereal/leche)     & $m=8$  (Ensalada atún) & $m=10$ (Sándwich) \\
+7: Domingo    & $m=1$ (Huevo/chorizo)    & $m=11$ (Milanesa res)  & $m=4$  (Tortas)   \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Coeficientes Técnicos ($a_{i,m}$)}
+
+Cantidad del insumo $i$ requerida por porción del platillo $m$. Matriz dispersa; solo entradas $> 0$:
+
+\begin{table}[h!]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lp{10cm}}
+\toprule
+\textbf{Platillo} & \textbf{Insumos por porción} \\
+\midrule
+1: Huevo con chorizo    & Huevo(1.2), Frijol(0.03), Tortilla(0.18), Aceite(0.01), Café(0.005) \\
+2: Huevo estrellado     & Huevo(1.2), Frijol(0.03), Pan(1.0), Aceite(0.01), Café(0.005) \\
+3: Huevo con jamón      & Huevo(1.2), Frijol(0.03), Tortilla(0.18), Aceite(0.01), Café(0.005) \\
+4: Tortas jamón/queso   & Pan(1.0), Tomate(0.02), Cebolla(0.01), Huevo(0.5), Café(0.005) \\
+5: Huevo con papa       & Huevo(1.2), Papa(0.05), Frijol(0.03), Tortilla(0.18), Aceite(0.01), Café(0.005) \\
+6: Cereal con leche     & Cereal(0.08), Leche(0.25), Café(0.005) \\
+7: Huevo/salchicha      & Huevo(1.2), Frijol(0.03), Tortilla(0.18), Aceite(0.01), Café(0.005) \\
+8: Ensalada de atún     & Atún(0.5), Lechuga(0.05), Tomate(0.02), Galletas(0.10) \\
+9: Pollo frito/pasta    & Pollo(0.12), Pasta(0.06), Tomate(0.03), Aceite(0.015), Agua(0.4) \\
+10: Sándwich de pavo    & Pan(2.0), Tomate(0.02), Cebolla(0.01), Papa(0.04), Zanahoria(0.03), Agua(0.4) \\
+11: Milanesa de res     & Res(0.10), Aceite(0.015), Tortilla(0.15), Agua(0.4) \\
+12: Guiso de res        & Res(0.10), Papa(0.04), Tomate(0.03), Tortilla(0.15), Agua(0.4) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ─────────────────────────────────────────────
+\section{Variables de Decisión}
+
+\subsection{Variables Enteras}
+
+\begin{itemize}
+  \item \textbf{Producción culinaria} $z_{m,t,c}$: Porciones del platillo $m$ preparadas el día $t$, comida $c$.
+  \[
+    z_{m,t,c} \in \mathbb{Z}^+ \cup \{0\} \quad \forall m \in M,\; \forall t \in T,\; \forall c \in C
+  \]
+  \item \textbf{Lotes de compra} $y_{i,t}$: Número de lotes comerciales del insumo $i$ adquiridos el día $t$.
+  \[
+    y_{i,t} \in \mathbb{Z}^+ \cup \{0\} \quad \forall i \in I,\; \forall t \in T
+  \]
+\end{itemize}
+
+\subsection{Variables Continuas}
+
+\begin{itemize}
+  \item \textbf{Compras netas} $x_{i,t}$: Volumen/masa exacta del insumo $i$ comprada el día $t$.
+  \[
+    x_{i,t} \in \mathbb{R}^+ \cup \{0\} \quad \forall i \in I,\; \forall t \in T
+  \]
+  \item \textbf{Consumo interno} $\gamma_{i,t}$: Cantidad del insumo $i$ consumida (destruida) por la cocina el día $t$.
+  \[
+    \gamma_{i,t} \in \mathbb{R}^+ \cup \{0\} \quad \forall i \in I,\; \forall t \in T
+  \]
+  \item \textbf{Estado de inventario} $\mu_{i,t}$: Nivel de inventario del insumo $i$ al final del día $t$.
+  \[
+    \mu_{i,t} \in \mathbb{R}^+ \cup \{0\} \quad \forall i \in I,\; \forall t \in T
+  \]
+\end{itemize}
+
+% ─────────────────────────────────────────────
+\section{Función Objetivo}
+
+Minimizar el costo total de adquisición sobre el horizonte de planificación:
+
+\[
+  \min \;\Phi = \sum_{t \in T} \sum_{i \in I} c_i \cdot x_{i,t} \tag{7}
+\]
+
+% ─────────────────────────────────────────────
+\section{Restricciones}
+
+\subsection{Satisfacción de Demanda}
+Las porciones preparadas deben cubrir la demanda diaria para cada tiempo de comida:
+\[
+  \sum_{m \in M} z_{m,t,c} \geq d_{t,c} \quad \forall t \in T,\; \forall c \in C \tag{8}
+\]
+
+\subsection{Apego al Calendario (Filtro Big-M)}
+Solo se pueden preparar platillos habilitados por el calendario ($\mathcal{M} = 150$):
+\[
+  z_{m,t,c} \leq \mathcal{M} \cdot \alpha_{m,t,c} \quad \forall m \in M,\; \forall t \in T,\; \forall c \in C \tag{9}
+\]
+
+\subsection{Relación Menú $\to$ Insumo}
+El consumo interno de cada insumo queda determinado por las recetas y las decisiones de producción:
+\[
+  \gamma_{i,t} = \sum_{c \in C} \sum_{m \in M} a_{i,m} \cdot z_{m,t,c} \quad \forall i \in I,\; \forall t \in T \tag{10}
+\]
+
+\subsection{Lotes de Compra}
+Las compras deben ser múltiplos enteros del tamaño de lote comercial:
+\[
+  x_{i,t} = \ell_i \cdot y_{i,t} \quad \forall i \in I,\; \forall t \in T \tag{11}
+\]
+
+\subsection{Límite Presupuestal}
+El gasto total no puede exceder el presupuesto disponible:
+\[
+  \sum_{t \in T} \sum_{i \in I} c_i \cdot x_{i,t} \leq B \tag{12}
+\]
+
+\subsection{Inventario Inicial (Condición de Cauchy)}
+Estado inicial del sistema en $t = 0$:
+\[
+  \mu_{i,0} = I_{i,0} \quad \forall i \in I \tag{13}
+\]
+
+\subsection{Balance de Inventario (Conservación de Masa)}
+Dinámica de diferencias finitas entre periodos adyacentes:
+\[
+  \mu_{i,t} = \mu_{i,t-1} + x_{i,t} + \delta_{i,t} - \gamma_{i,t} \quad \forall i \in I,\; \forall t \in T \tag{14}
+\]
+
+\subsection{Condición de Frontera Terminal}
+El inventario final debe ser al menos igual al inventario inicial para garantizar continuidad operativa:
+\[
+  \mu_{i,7} \geq I_{i,0} \quad \forall i \in I \tag{15}
+\]
+
+% ─────────────────────────────────────────────
+\section*{Conclusión}
+
+El modelo constituye un MILP algebraicamente cerrado con 30 insumos, 7 días y 3 tiempos de comida. Se resuelve mediante Branch \& Bound, garantizando un mínimo global que minimiza el costo de adquisición mientras satisface la demanda nutricional de 100 migrantes diarios en Casa Monarca durante una semana completa.
+
+\end{document}
