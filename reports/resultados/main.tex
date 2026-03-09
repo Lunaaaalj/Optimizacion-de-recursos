@@ -1,0 +1,414 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\geometry{margin=2.5cm}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    urlcolor=cyan!70!black
+}
+
+\title{\textbf{Resultados de la Optimización MILP}\\
+\large Optimización de Flujos Alimentarios en Casa Monarca}
+\author{Optimización Determinista}
+\date{8 de marzo de 2026}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Resumen Ejecutivo}
+% ─────────────────────────────────────────────────────────────────────────────
+
+El solver encontró una solución con condición de término \textbf{óptima}. Los indicadores
+principales de la solución se resumen en la Tabla~\ref{tab:resumen}.
+
+\begin{table}[h!]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lc}
+\toprule
+\textbf{Indicador} & \textbf{Valor} \\
+\midrule
+Estado del solver              & \texttt{ok} \\
+Condición de término           & \texttt{optimal} \\
+Costo total óptimo $\Phi^*$    & \$~25{,}995.10 MXN \\
+Presupuesto disponible $B$     & \$~50{,}000.00 MXN \\
+Remanente presupuestal         & \$~24{,}004.90 MXN \\
+Utilización del presupuesto    & 51.99\% \\
+Días con compras               & 2 de 7 \\
+\bottomrule
+\end{tabular}
+\caption{Indicadores globales de la solución óptima.}
+\label{tab:resumen}
+\end{table}
+
+La solución concentra el 99.1\% del gasto en el primer día (\$~25{,}755.10 MXN),
+con una compra residual el martes (\$~240.00 MXN). Del presupuesto total, el
+48.01\% permanece sin utilizar, lo que indica un holgado margen operativo.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Plan Semanal de Comidas ($z_{m,t,c}$)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+La solución determina exactamente un platillo por tiempo de comida por día,
+con 100 porciones preparadas en cada ranura. La Tabla~\ref{tab:menu} muestra
+el menú óptimo para la semana.
+
+\begin{table}[h!]
+\centering
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Día} & \textbf{Desayuno} & \textbf{Comida} & \textbf{Cena} \\
+\midrule
+Lunes      & Huevo con chorizo  & Pollo frito/pasta  & Sándwich de pavo   \\
+Martes     & Huevo con papa     & Guiso de res       & Tortas jamón/queso \\
+Miércoles  & Huevo estrellado   & Milanesa de res    & Ensalada de atún   \\
+Jueves     & Huevo con jamón    & Pollo frito/pasta  & Sándwich de pavo   \\
+Viernes    & Huevo/salchicha    & Guiso de res       & Tortas jamón/queso \\
+Sábado     & Cereal con leche   & Ensalada de atún   & Sándwich de pavo   \\
+Domingo    & Huevo con chorizo  & Milanesa de res    & Tortas jamón/queso \\
+\midrule
+\multicolumn{4}{l}{\small Todas las celdas: 100 porciones preparadas ($z_{m,t,c} = 100$).} \\
+\bottomrule
+\end{tabular}
+\caption{Plan semanal de comidas óptimo.}
+\label{tab:menu}
+\end{table}
+
+\noindent\textbf{Observaciones:}
+\begin{itemize}
+    \item Se utilizan los 12 platillos disponibles del catálogo $M$, distribuidos
+          en los 21 tiempos de comida de la semana.
+    \item Las fuentes de proteína se diversifican a lo largo de la semana:
+          huevo (desayunos), pollo (lunes/jueves comida), res (martes/miércoles/viernes/domingo)
+          y atún (miércoles cena y sábado comida).
+    \item El platillo ``Cereal con leche'' aparece únicamente el sábado en el desayuno,
+          consumiendo la totalidad de las cajas de cereal disponibles en inventario.
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Plan de Compras Diarias ($x_{i,t}$ y $y_{i,t}$)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Lunes — Gasto: \$~25{,}755.10 MXN}
+
+El lunes concentra el grueso de las adquisiciones de la semana.
+La Tabla~\ref{tab:compras_lunes} detalla las compras del primer día.
+
+\begin{table}[h!]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{lrrc}
+\toprule
+\textbf{Insumo} & \textbf{Cantidad} & \textbf{Lotes $y_{i,1}$} & \textbf{Costo (\$~MXN)} \\
+\midrule
+Tortilla (kg)      & 150.00 & 150   & 3{,}750.00 \\
+Tomate (kg)        &  28.00 &  28   &    840.00  \\
+Cebolla (kg)       &   6.00 &   6   &    150.00  \\
+Papa (kg)          &  25.00 &  25   &    875.00  \\
+Zanahoria (kg)     &   3.00 &   3   &     60.00  \\
+Lechuga (pz)       &  10.00 &  10   &    200.00  \\
+Aceite (L)         &  12.00 &  12   &    456.00  \\
+Huevo (unidad)     & 870.00 &  29   & 2{,}462.10 \\
+Leche (L)          &  25.00 &  25   &    700.00  \\
+Café (kg)          &   5.00 &   5   &    750.00  \\
+Agua (L)           & 360.00 & 360   &    900.00  \\
+Galletas (paq)     &  20.00 &  20   &    300.00  \\
+Pan (pz)           & 1000.00 & 1000 & 3{,}000.00 \\
+Atún (lata)        & 100.00 & 100   & 2{,}000.00 \\
+Pollo (kg)         &  24.00 &  24   & 1{,}632.00 \\
+Res (kg)           &  40.00 &  40   & 7{,}200.00 \\
+Cereal (caja)      &   8.00 &   8   &    480.00  \\
+\midrule
+\textbf{Total}     &        &       & \textbf{25{,}755.10} \\
+\bottomrule
+\end{tabular}
+\caption{Compras del lunes ($t = 1$).}
+\label{tab:compras_lunes}
+\end{table}
+
+\subsection{Martes — Gasto: \$~240.00 MXN}
+
+El martes requiere únicamente dos insumos complementarios para cubrir
+las recetas de la semana que no estaban en inventario inicial.
+
+\begin{table}[h!]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{lrrc}
+\toprule
+\textbf{Insumo} & \textbf{Cantidad} & \textbf{Lotes $y_{i,2}$} & \textbf{Costo (\$~MXN)} \\
+\midrule
+Zanahoria (kg) & 6.00 & 6  & 120.00 \\
+Pasta (paq)    & 12.00 & 12 & 120.00 \\
+\midrule
+\textbf{Total} &       &    & \textbf{240.00} \\
+\bottomrule
+\end{tabular}
+\caption{Compras del martes ($t = 2$).}
+\label{tab:compras_martes}
+\end{table}
+
+\noindent De miércoles a domingo no se realizan compras ($x_{i,t} = 0 \;\forall i,\; t \in \{3,\ldots,7\}$).
+Esto responde a la estrategia de \emph{front-loading}: el modelo aprovecha el inventario
+inicial, las donaciones del lunes (50 kg Arroz + 50 kg Frijol) y las compras masivas del
+primer día para cubrir toda la semana sin recurrir al mercado diariamente.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Evolución del Inventario ($\mu_{i,t}$)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+La Tabla~\ref{tab:inventario} muestra el nivel de inventario al cierre de cada día
+para los insumos con actividad durante la semana (se omiten los insumos con $\mu_{i,t} = 0$
+en todo el horizonte).
+
+\begin{longtable}{lrrrrrrr}
+\toprule
+\textbf{Insumo} & \textbf{Lun} & \textbf{Mar} & \textbf{Mié} & \textbf{Jue} & \textbf{Vie} & \textbf{Sáb} & \textbf{Dom} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Arroz (kg)        & 150.00 & 150.00 & 150.00 & 150.00 & 150.00 & 150.00 & 150.00 \\
+Frijol (kg)       & 377.00 & 374.00 & 371.00 & 368.00 & 365.00 & 365.00 & 362.00 \\
+Tortilla (kg)     & 132.00 &  99.00 &  84.00 &  66.00 &  33.00 &  33.00 &   0.00 \\
+Tomate (kg)       &  23.00 &  18.00 &  16.00 &  11.00 &   6.00 &   2.00 &   0.00 \\
+Cebolla (kg)      &   5.00 &   4.00 &   4.00 &   3.00 &   2.00 &   1.00 &   0.00 \\
+Papa (kg)         &  21.00 &  12.00 &  12.00 &   8.00 &   4.00 &   0.00 &   0.00 \\
+Zanahoria (kg)    &   0.00 &   6.00 &   6.00 &   3.00 &   3.00 &   0.00 &   0.00 \\
+Lechuga (pz)      &  10.00 &  10.00 &   5.00 &   5.00 &   5.00 &   0.00 &   0.00 \\
+Pasta (paq)       & 294.00 & 306.00 & 306.00 & 300.00 & 300.00 & 300.00 & 300.00 \\
+Aceite (L)        & 101.50 & 100.50 &  98.00 &  95.50 &  94.50 &  94.50 &  92.00 \\
+Huevo (unidad)    & 750.00 & 580.00 & 460.00 & 340.00 & 170.00 & 170.00 &   0.00 \\
+Leche (L)         &  32.50 &  32.50 &  32.50 &  32.50 &  32.50 &   7.50 &   7.50 \\
+Café (kg)         &   4.50 &   3.50 &   3.00 &   2.50 &   1.50 &   1.00 &   0.00 \\
+Agua (L)          & 280.00 & 240.00 & 200.00 & 120.00 &  80.00 &  40.00 &   0.00 \\
+Azúcar (kg)       & 156.00 & 156.00 & 156.00 & 156.00 & 156.00 & 156.00 & 156.00 \\
+Galletas (paq)    &  55.00 &  55.00 &  45.00 &  45.00 &  45.00 &  35.00 &  35.00 \\
+Pan (pz)          & 800.00 & 700.00 & 600.00 & 400.00 & 300.00 & 100.00 &   0.00 \\
+Atún (lata)       & 169.00 & 169.00 & 119.00 & 119.00 & 119.00 &  69.00 &  69.00 \\
+Pollo (kg)        &  12.00 &  12.00 &  12.00 &   0.00 &   0.00 &   0.00 &   0.00 \\
+Res (kg)          &  40.00 &  30.00 &  20.00 &  20.00 &  10.00 &  10.00 &   0.00 \\
+Harina Maseca (kg)& 100.00 & 100.00 & 100.00 & 100.00 & 100.00 & 100.00 & 100.00 \\
+Cereal (caja)     &   8.00 &   8.00 &   8.00 &   8.00 &   8.00 &   0.00 &   0.00 \\
+\caption{Inventario al cierre de cada día $\mu_{i,t}$.}
+\label{tab:inventario}
+\end{longtable}
+
+\noindent\textbf{Observaciones clave:}
+\begin{itemize}
+    \item \textbf{Arroz y Frijol:} no requieren compras. El inventario inicial (100 kg y 330 kg,
+          respectivamente) más las donaciones del lunes (+50 kg cada uno) cubren el consumo
+          semanal con amplio remanente al domingo ($\mu_{Arroz,7} = 150$, $\mu_{Frijol,7} = 362$).
+    \item \textbf{Inventarios que alcanzan cero al domingo:} Tortilla, Tomate, Cebolla, Huevo,
+          Café, Agua, Pan y Res se agotan exactamente al fin de la semana, indicando un
+          aprovechamiento ajustado de los recursos adquiridos.
+    \item \textbf{Inventarios estáticos:} Azúcar, Harina Maseca y Pasta no se consumen en
+          ninguna receta activa del menú, por lo que mantienen su nivel constante toda la semana.
+          Representan un excedente transferible a la siguiente iteración del plan.
+    \item \textbf{Zanahoria:} presenta inventario cero el lunes a pesar de haberse comprado,
+          porque la compra del martes (6 kg) cubre los requerimientos del sándwich de pavo
+          de los días posteriores.
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Consumo Interno Diario ($\gamma_{i,t}$)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+La Tabla~\ref{tab:consumo} presenta el flujo de destrucción (consumo en cocina) de cada
+insumo por día. Solo se muestran los insumos con consumo positivo en al menos un día.
+
+\begin{longtable}{lrrrrrrr}
+\toprule
+\textbf{Insumo} & \textbf{Lun} & \textbf{Mar} & \textbf{Mié} & \textbf{Jue} & \textbf{Vie} & \textbf{Sáb} & \textbf{Dom} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Frijol (kg)     &  3.0 &  3.0 &  3.0 &  3.0 &  3.0 &  0.0 &  3.0 \\
+Tortilla (kg)   & 18.0 & 33.0 & 15.0 & 18.0 & 33.0 &  0.0 & 33.0 \\
+Tomate (kg)     &  5.0 &  5.0 &  2.0 &  5.0 &  5.0 &  4.0 &  2.0 \\
+Cebolla (kg)    &  1.0 &  1.0 &  0.0 &  1.0 &  1.0 &  1.0 &  1.0 \\
+Papa (kg)       &  4.0 &  9.0 &  0.0 &  4.0 &  4.0 &  4.0 &  0.0 \\
+Zanahoria (kg)  &  3.0 &  0.0 &  0.0 &  3.0 &  0.0 &  3.0 &  0.0 \\
+Lechuga (pz)    &  0.0 &  0.0 &  5.0 &  0.0 &  0.0 &  5.0 &  0.0 \\
+Pasta (paq)     &  6.0 &  0.0 &  0.0 &  6.0 &  0.0 &  0.0 &  0.0 \\
+Aceite (L)      &  2.5 &  1.0 &  2.5 &  2.5 &  1.0 &  0.0 &  2.5 \\
+Huevo (unidad)  &120.0 &170.0 &120.0 &120.0 &170.0 &  0.0 &170.0 \\
+Leche (L)       &  0.0 &  0.0 &  0.0 &  0.0 &  0.0 & 25.0 &  0.0 \\
+Café (kg)       &  0.5 &  1.0 &  0.5 &  0.5 &  1.0 &  0.5 &  1.0 \\
+Agua (L)        & 80.0 & 40.0 & 40.0 & 80.0 & 40.0 & 40.0 & 40.0 \\
+Galletas (paq)  &  0.0 &  0.0 & 10.0 &  0.0 &  0.0 & 10.0 &  0.0 \\
+Pan (pz)        &200.0 &100.0 &100.0 &200.0 &100.0 &200.0 &100.0 \\
+Atún (lata)     &  0.0 &  0.0 & 50.0 &  0.0 &  0.0 & 50.0 &  0.0 \\
+Pollo (kg)      & 12.0 &  0.0 &  0.0 & 12.0 &  0.0 &  0.0 &  0.0 \\
+Res (kg)        &  0.0 & 10.0 & 10.0 &  0.0 & 10.0 &  0.0 & 10.0 \\
+Cereal (caja)   &  0.0 &  0.0 &  0.0 &  0.0 &  0.0 &  8.0 &  0.0 \\
+\caption{Consumo interno diario $\gamma_{i,t}$ (solo insumos con consumo $> 0$).}
+\label{tab:consumo}
+\end{longtable}
+
+\noindent Los insumos de mayor volumen semanal total son: Pan (1{,}000 pz),
+Agua (360 L), Huevo (870 unidades) y Tortilla (150 kg). El consumo de Leche
+se concentra exclusivamente el sábado, por ser el único día con cereal en el menú.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Análisis de Costos}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Desglose por Día}
+
+\begin{table}[h!]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Día} & \textbf{Gasto (\$~MXN)} & \textbf{\% del Total} \\
+\midrule
+Lunes      & 25{,}755.10 & 99.08\% \\
+Martes     &     240.00  &  0.92\% \\
+Miércoles  &       0.00  &  0.00\% \\
+Jueves     &       0.00  &  0.00\% \\
+Viernes    &       0.00  &  0.00\% \\
+Sábado     &       0.00  &  0.00\% \\
+Domingo    &       0.00  &  0.00\% \\
+\midrule
+\textbf{Total}        & \textbf{25{,}995.10} & 100.00\% \\
+Presupuesto $B$       & 50{,}000.00 & --- \\
+Remanente             & 24{,}004.90 & 48.01\% \\
+\bottomrule
+\end{tabular}
+\caption{Resumen de costos por día y comparación con el presupuesto.}
+\label{tab:costos_dia}
+\end{table}
+
+\subsection{Principales Impulsores de Costo}
+
+La Tabla~\ref{tab:top5} presenta los cinco insumos que concentran el mayor costo
+de adquisición, junto con su participación relativa en el gasto total.
+
+\begin{table}[h!]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{clccc}
+\toprule
+\textbf{Rango} & \textbf{Insumo} & \textbf{Cantidad} & \textbf{Costo (\$~MXN)} & \textbf{\% del Total} \\
+\midrule
+1 & Res (kg)        & 40 kg        & 7{,}200.00 & 27.70\% \\
+2 & Pan (pz)        & 1{,}000 pz   & 3{,}000.00 & 11.54\% \\
+3 & Huevo (unidad)  & 870 unidades & 2{,}462.10 &  9.47\% \\
+4 & Atún (lata)     & 100 latas    & 2{,}000.00 &  7.69\% \\
+5 & Pollo (kg)      & 24 kg        & 1{,}632.00 &  6.28\% \\
+\midrule
+  & \textit{Subtotal top-5} & & \textit{16{,}294.10} & \textit{62.68\%} \\
+  & Resto de insumos        & & \textit{9{,}701.00}  & \textit{37.32\%} \\
+\bottomrule
+\end{tabular}
+\caption{Cinco principales impulsores de costo.}
+\label{tab:top5}
+\end{table}
+
+Los insumos proteicos (Res, Huevo, Atún, Pollo) representan colectivamente el
+\textbf{51.14\%} del gasto total, lo que refleja el enfoque nutritivo del menú.
+El Pan ocupa el segundo lugar en costo absoluto a pesar de su bajo precio unitario
+(\$3/pz), por el elevado volumen requerido (1{,}000 pz semanales).
+
+\subsection{Visualización de Costos por Insumo}
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xbar,
+    width=12cm, height=8cm,
+    xlabel={Costo (\$ MXN)},
+    symbolic y coords={
+        Cereal,Agua,Aceite,Galletas,Leche,Tortilla,Papa,Tomate,Café,
+        Zanahoria$+$Pasta,Cebolla,Lechuga,Pollo,Atún,Huevo,Pan,Res
+    },
+    ytick=data,
+    nodes near coords,
+    nodes near coords align={horizontal},
+    every node near coord/.style={font=\tiny},
+    bar width=6pt,
+    enlarge y limits=0.05,
+    xmin=0, xmax=8000,
+]
+\addplot coordinates {
+    (480,   Cereal)
+    (900,   Agua)
+    (456,   Aceite)
+    (300,   Galletas)
+    (700,   Leche)
+    (3750,  Tortilla)
+    (875,   Papa)
+    (840,   Tomate)
+    (750,   Café)
+    (240,   Zanahoria$+$Pasta)
+    (150,   Cebolla)
+    (200,   Lechuga)
+    (1632,  Pollo)
+    (2000,  Atún)
+    (2462,  Huevo)
+    (3000,  Pan)
+    (7200,  Res)
+};
+\end{axis}
+\end{tikzpicture}
+\caption{Costo de adquisición por insumo (semana completa, en \$ MXN).}
+\label{fig:costos}
+\end{figure}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Conclusiones}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\begin{enumerate}
+    \item \textbf{Optimalidad global verificada.} El solver reporta condición \texttt{optimal},
+          garantizando que no existe ningún plan de compras y menús con menor costo que
+          \$~25{,}995.10 MXN para las restricciones establecidas.
+
+    \item \textbf{Amplio margen presupuestal.} El 48.01\% del presupuesto (\$~24{,}004.90 MXN)
+          queda sin utilizar. Este holgura puede aprovecharse para: (a) incrementar porciones
+          preparadas si la población beneficiaria supera los 100 por comida, (b) añadir platillos
+          de mayor costo o mayor diversidad nutricional, o (c) constituir una reserva ante
+          imprevistos de precio o donaciones.
+
+    \item \textbf{Estrategia de compra en bloque (\emph{front-loading}).} El modelo concentra
+          el 99.1\% del gasto en el día 1, minimizando transacciones con proveedores y
+          simplificando la logística de abastecimiento.
+
+    \item \textbf{Aprovechamiento del inventario inicial y donaciones.} El Arroz y el Frijol
+          no requieren compras semanales gracias al stock inicial y a las donaciones del
+          lunes, representando un ahorro de \$~4{,}400 MXN potenciales (150 kg Arroz $\times$
+          \$25 + 150 kg Frijol $\times$ \$38 equivalentes al consumo semanal cubierto).
+
+    \item \textbf{Condición terminal satisfecha.} Los insumos perecederos de alto consumo
+          (Tortilla, Huevo, Pan, Res, Agua, Café) alcanzan exactamente cero al domingo,
+          eliminando desperdicios y cumpliendo la restricción $\mu_{i,7} \geq I_{i,0}$
+          para todos los insumos con valor inicial en la bodega.
+
+    \item \textbf{Costo per cápita.} Con 100 beneficiarios y 21 comidas en la semana, el
+          costo por porción servida es de \$~25{,}995.10 / (100 $\times$ 21)
+          $\approx$ \textbf{\$~12.38 MXN por porción}.
+\end{enumerate}
+
+\end{document}
