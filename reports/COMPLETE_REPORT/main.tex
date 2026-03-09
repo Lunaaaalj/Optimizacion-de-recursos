@@ -1,0 +1,978 @@
+\documentclass[12pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{mathrsfs}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{comment}
+\usepackage{listings}
+\usepackage{hyperref}
+\titlespacing*{\section}{0pt}{0.5ex}{1ex}
+\titlespacing*{\subsection}{0pt}{0.5ex}{0.5ex}
+\usepackage{xcolor}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{subcaption}
+\pgfplotsset{compat=1.18}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{babel}
+\usepackage{palatino}
+\usepackage{lettrine}
+\usepackage{lipsum}
+\usepackage{subcaption}
+\usepackage[backend = biber, style = apa]{biblatex}
+\usepackage{csquotes}
+\addbibresource{refs.bib}
+\usepackage{tikz-3dplot}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{longtable}
+
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+}
+
+
+\definecolor{bg}{RGB}{248,248,248}
+\definecolor{frame}{RGB}{220,220,220}
+\definecolor{comment}{RGB}{120,120,120}
+\definecolor{keyword}{RGB}{30,90,160}
+\definecolor{string}{RGB}{180,60,60}
+\definecolor{linenumber}{RGB}{150,150,150}
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\bfseries,
+  commentstyle=\itshape,
+  stringstyle=\ttfamily,
+  tabsize=2
+}
+
+\begin{document}
+\begin{titlepage}
+\centering
+
+\rule{\textwidth}{1pt}
+{\LARGE\bfseries ANALISIS DE OPTIMIZACIÓN DE INVENTARIOS: CASA MONARCA \par}
+\vspace{0.5cm}
+{\large\scshape Optimización determinista\par}
+\rule{\textwidth}{1pt}
+\vspace{1cm}
+
+{\large Angel Luna \\
+        Ruben Galindo A00228356\par
+        Noé Villarreal A01572039\par
+        Ignacio Kume\par}
+\vspace{0.3cm}
+{\itshape Instituto Tecnológico y de Estudios Superiores de Monterrey\par}
+
+
+
+\vspace{0.8cm}
+
+\tdplotsetmaincoords{68}{110}
+
+\begin{tikzpicture}[tdplot_main_coords, scale=3, line join=round, line cap=round]
+
+% ---------- styles ----------
+\tikzset{
+  boxedge/.style={black!35, line width=0.35pt},
+  boxdiag/.style={black!20, line width=0.25pt},
+  axis/.style={black, ->, line width=0.55pt},
+  strong/.style={black, line width=0.9pt},
+  med/.style={black, line width=0.65pt},
+  hidden/.style={black!45, dashed, line width=0.35pt},
+  faceA/.style={fill=black!18, fill opacity=0.35},
+  faceB/.style={fill=black!30, fill opacity=0.25},
+  dot/.style={circle, fill=black, inner sep=0pt, minimum size=3.2pt},
+}
+
+% ---------- outer box ----------
+\coordinate (A)  at (-1,-1,0);
+\coordinate (B)  at ( 1,-1,0);
+\coordinate (C)  at ( 1, 1,0);
+\coordinate (D)  at (-1, 1,0);
+
+\coordinate (Ap) at (-1,-1,1.2);
+\coordinate (Bp) at ( 1,-1,1.2);
+\coordinate (Cp) at ( 1, 1,1.2);
+\coordinate (Dp) at (-1, 1,1.2);
+
+% draw box (light)
+\draw[boxedge] (A)--(B)--(C)--(D)--cycle;
+\draw[boxedge] (Ap)--(Bp)--(Cp)--(Dp)--cycle;
+\draw[boxedge] (A)--(Ap) (B)--(Bp) (C)--(Cp) (D)--(Dp);
+
+% faint diagonals (optional but nice)
+\draw[boxdiag] (A)--(Cp);
+\draw[boxdiag] (D)--(Bp);
+
+% ---------- axes + labels ----------
+\coordinate (O)   at (0,0,0);
+\coordinate (E12) at (-1.25,-0.75,0);
+\coordinate (E23) at ( 1.35, 0.00,0);
+\coordinate (E13) at ( 0.00, 0.00,1.45);
+
+\draw[axis] (O)--(E12);
+\draw[axis] (O)--(E23);
+\draw[axis] (O)--(E13);
+
+\node[below left] at (E12) {$\{1,2\}$};
+\node[right]      at (E23) {$\{2,3\}$};
+\node[above]      at (E13) {$\{1,3\}$};
+
+% ---------- key outer triangle (bold) ----------
+% choose the top triangle corners
+\draw[strong] (Dp)--(Cp)--(Bp)--cycle;
+
+% ---------- inner geometry (faces drawn back-to-front) ----------
+% a "deep" apex and two nested hulls (tweak coords for exact match)
+\coordinate (V) at (0.00, 0.00,-0.35);   % main bottom apex
+
+% outer inner hull (like the big translucent wedge)
+\coordinate (p1) at (-0.60, 0.65,0.95);
+\coordinate (p2) at ( 0.85, 0.55,0.95);
+\coordinate (p3) at ( 0.35,-0.60,0.88);
+
+% inner hull (smaller wedge inside)
+\coordinate (q1) at (-0.35, 0.42,0.78);
+\coordinate (q2) at ( 0.55, 0.38,0.78);
+\coordinate (q3) at ( 0.25,-0.35,0.66);
+
+% Put fills in a transparency group so overlaps look smooth.
+\begin{scope}[transparency group]
+
+  % --- Draw "back" faces first (order matters!) ---
+  \fill[faceB] (p1)--(p2)--(V)--cycle;
+  \fill[faceB] (p2)--(p3)--(V)--cycle;
+  \fill[faceB] (p3)--(p1)--(V)--cycle;
+
+  \fill[faceA] (q1)--(q2)--(V)--cycle;
+  \fill[faceA] (q2)--(q3)--(V)--cycle;
+  \fill[faceA] (q3)--(q1)--(V)--cycle;
+
+\end{scope}
+
+% outlines (medium)
+\draw[med] (p1)--(p2)--(p3)--cycle;
+\draw[med] (p1)--(V) (p2)--(V) (p3)--(V);
+
+\draw[med] (q1)--(q2)--(q3)--cycle;
+\draw[med] (q1)--(V) (q2)--(V) (q3)--(V);
+
+% optional: hidden/helper edges to mimic book-style construction
+\draw[hidden] (q2)--(0.55,0.38,0.0);
+\draw[hidden] (q2)--(0.55,0.0,0.78);
+
+% ---------- point + x* ----------
+\coordinate (P) at (0.20,0.12,0.55);
+\node[dot] at (P) {};
+\node[black] at (0.10,-0.03,0.23) {$x^*$};
+
+% mark apex like in the figure
+\node[dot] at (V) {};
+
+\end{tikzpicture}
+
+\vspace{1cm}
+
+{\large \today \par}
+\vfill
+
+%-----------------------------------------------------------
+% Detalle estético inferior
+%-----------------------------------------------------------
+\rule{0.5\textwidth}{0.5pt}\par
+\vspace{0.3cm}
+\pagebreak
+
+\end{titlepage}
+
+\pagebreak
+
+\abstract{
+El presente documento plantea la formulación de un modelo de programación matemática para optimizar la asignación de recursos y la planeación de menús en el albergue para migrantes Casa Monarca, ubicado en el estado de Nuevo León, México. A través de la integración del clásico problema de la dieta, el control de inventarios de productos perecederos y la planificación cíclica de menús, se busca minimizar los costos de adquisición de víveres garantizando los requerimientos nutricionales de los beneficiarios, respetando la capacidad de almacenamiento y la vida útil de los insumos.
+}
+
+
+\tableofcontents
+
+\chapter{Introducción a la necesidad de la investigacion de operaciones}
+
+\section{Contextualización}
+En los últimos años, el flujo migratorio hacia y a través de México ha experimentado un incremento sustancial. De acuerdo con la Organización Internacional para las Migraciones (OIM), estados del norte del país como Nuevo León se han consolidado como puntos críticos de tránsito y destino para miles de personas en situación de movilidad. Este fenómeno ha generado una presión sin precedentes sobre las organizaciones de la sociedad civil y los albergues, tales como Casa Monarca.
+
+Actualmente, Casa Monarca enfrenta un severo problema de saturación y recursos económicos limitados. La alimentación de los migrantes es una de las necesidades más apremiantes y costosas. El reto principal consiste en diseñar un modelo de programación lineal (y entera) que optimice la asignación del presupuesto destinado a la compra de víveres. Esta optimización debe garantizar la provisión de tres comidas diarias durante un horizonte de planeación definido, tomando en consideración los inventarios actuales (como arroz, frijol, aceite, huevo), los costos fluctuantes del mercado, las fechas de caducidad de productos perecederos, las restricciones de espacio en la bodega y el diseño de menús cíclicos que cumplan con los requerimientos nutricionales mínimos.
+
+
+\subsection{La Migración}
+La migración es el movimiento de personas fuera de su lugar de residencia habitual, ya sea fuera o dentro del país. Hay varios tipos de migración, una de ellas es la migración interna que se refiere al traslado de las personas dentro del mimso país y la migración internacional que se refiere al traslado de las personas de un país a otro. Existen más tipos de migración dependiendo de su período de tiempo, las migraciones temporales donde las personas se mudan a otro lugar por un período especifico. Migraciín circular o de retorno es cuando las personas se mudan a un lugar por un periodo y regresan a su lugar de origen. Migración permanente es cuando se tiene la intención de establecerse permanentemente en el lugar de destino. Por último están los tipos de migración según sus causas, el primer tipo son las migraciones voluntarias que son desplazamientos de personas que eligen mudarse a otro lugar por motivos personales. Lo hacen por oportunidades, motivos educativos, estilo de vida, familia, etc. El segundo tipo son las migraciones forzadas que se refiere a el traslado de las personas debido a factores externos que los obliga a moverse. El último tipo es la migración por desastres naturales. \\
+
+Los problemas de migración se centran en la inseguridad y la falta de protección legal.  En México, uno de los temas más importantes es la vulnerabilidad al crimen y al abuso, ya que el 41\% de la población cree que es probable que los migrantes sean sometidos a abuso o violencia durante su viaje.  Desde un punto de vista teórico, el problema es superar las causas forzadas, como las crisis económicas o sociales, que obligan a las personas a abandonar sus hogares, enfrentándolas a difíciles procesos de adaptación en los países de destino.
+A nivel nacional, México se ha establecido como un "país de estancia prolongada" y ya no es simplemente un país de tránsito.  Según ACNUR (2025), México sigue estando entre los 10 países con mayor número de solicitudes de asilo en todo el mundo, superando las 80.000 por año.  La tendencia actual se caracteriza por la "estabilización del flujo" tras los máximos históricos; la OIM (2025) indica que, a pesar de una reducción del 35\% en los encuentros de migración irregular en comparación con 2023, el perfil del migrante se ha vuelto más vulnerable, con un enfoque en familias de Honduras, Cuba, Haití y Venezuela.
+A nivel nacional, México se ha posicionado como un "país de estancia prolongada" y ya no es solo un país de tránsito.  Según ACNUR (2025), México sigue siendo uno de los 10 países con mayor número de solicitudes de asilo en el mundo, superando las 80.000 al año.  La tendencia actual se caracteriza por la "estabilización del flujo" después de los máximos históricos; la OIM (2025) destaca que, aunque se ha producido una disminución del 35\% en los encuentros de migración irregular en comparación con 2023, el perfil del migrante se ha vuelto más vulnerable, con un enfoque en familias de Honduras, Cuba, Haití y Venezuela.  El punto más importante de 2025 es el cierre de plataformas digitales como CBP One, lo que ha provocado cuellos de botella en las rutas clásicas. \\
+
+Se destaca en BBVA Research (2025) y la UNAM (2024) que la inmigración tiene un valor agregado positivo; incluso si los inmigrantes fueran menos productivos que los nativos, su incorporación en sectores como la manufactura y los servicios ayuda a mantener costos estables y satisfacer la demanda de mano de obra en regiones con escasez. En Nuevo León, aunque existe el temor de que incremente la pobreza, los datos del CEEY (2025) sugieren que el dinamismo del estado ofrece mejores canales de movilidad social que el promedio nacional.
+La integración socioeconómica es el principal reto. En Dialnet (2024) se advierte sobre la falta de políticas públicas locales que transformen la asistencia humanitaria en inclusión laboral formal, lo que genera percepciones de inseguridad y brotes de xenofobia cuando los migrantes quedan varados en la informalidad. \\
+
+Instituciones como Casanicolás y Casa Monarca, organizadas a través de la REDODEM (2024), se enfrentan a una crisis de sostenibilidad. Sus mayores dificultades son:
+\begin{itemize}
+    \item Saturación y Espacio Cívico: Los albergues están trabajando al máximo de su capacidad (por ejemplo, Casanicolás, con capacidad para 60 personas, permanentemente sobrepasada).
+
+    \item Criminalización y Riesgo: La REDODEM constata un aumento en la estigmatización y riesgos de seguridad, ya que los albergues son puntos débiles frente al crimen organizado, que busca reclutar o extorsionar a los tránsitos.
+
+    \item Falta de Apoyo Institucional: Hay una desvinculación entre el crecimiento del flujo y el apoyo proporcionado por el estado, dejando la salud, la alimentación y la asesoría legal casi exclusivamente a la sociedad civil organizada.
+\end{itemize}
+
+\subsection{Casa Monarca}
+Casa Monarca, Ayuda Humanitaria al Migrante A.B.P., es una organización de la sociedad civil dedicada a la atención integral de personas en situación de migración. Su labor se enfoca principalmente en brindar protección y acompañamiento a migrantes en tránsito, personas deportadas, refugiadas, solicitantes de asilo y desplazados internos que atraviesan el país. Desde una perspectiva de derechos humanos, Casa Monarca busca garantizar condiciones mínimas de seguridad, dignidad y bienestar a una población altamente vulnerable, cuya situación suele estar marcada por la incertidumbre, la violencia y la falta de acceso a servicios básicos. En este sentido, la organización no solo funciona como un albergue temporal, sino también como un espacio de atención humanitaria y de defensa de los derechos de las personas migrantes. La institución se localiza en el municipio de Santa Catarina, dentro de la zona metropolitana de Monterrey, en el estado de Nuevo León. Esta ubicación es estratégica, ya que Monterrey representa un punto clave en las rutas migratorias hacia el norte del país y la frontera con Estados Unidos. Debido a su posición geográfica y a su relevancia económica, la ciudad recibe constantemente población migrante que requieren apoyo inmediato, lo que convierte a Casa Monarca en un actor fundamental dentro de la red de asistencia humanitaria en el norte de México.\\
+
+En cuanto a sus resultados, Casa Monarca ha logrado consolidarse como un referente en la atención a migrantes, al proporcionar asistencia a miles de personas cada año y facilitar procesos de regularización, integración o continuación segura de su tránsito. Su impacto no se limita únicamente al alojamiento temporal, sino que también incluye la canalización a servicios especializados y la promoción de condiciones más seguras para quienes deciden permanecer en el país. Además, su trabajo contribuye a visibilizar la problemática migratoria y a sensibilizar a la sociedad sobre la importancia de una respuesta solidaria y estructurada ante este fenómeno. Finalmente, los tipos de ayuda que brinda Casa Monarca son diversos y abarcan tanto necesidades básicas como apoyo especializado. Entre sus principales servicios se encuentran el alojamiento temporal, la alimentación, la entrega de ropa y artículos de higiene, atención médica primaria, apoyo psicológico y asesoría legal en materia migratoria. Asimismo, la organización ofrece orientación sobre derechos, acompañamiento en trámites y, en algunos casos, apoyo para la inserción laboral o educativa. Este enfoque integral permite atender no solo la urgencia inmediata, sino también las condiciones necesarias para que las personas migrantes puedan reconstruir su proyecto de vida en un entorno más seguro y digno. En conjunto, Casa Monarca representa un esfuerzo organizado de la sociedad civil para responder a uno de los desafíos humanitarios más relevantes en México contemporáneo.\\
+
+\section{Planteamiento del problema}
+
+Optimizar los recursos en Casa Monarca es una tarea de vital importancia debido a la restricción presupuestal bajo la cual opera la institución y a la alta demanda de asistencia humanitaria. Garantizar una alimentación digna y nutritiva es un derecho humano fundamental, alineado directamente con el Objetivo de Desarrollo Sostenible (ODS) 2: Hambre Cero.
+
+Una planificación deficiente en la cocina y en la bodega conlleva consecuencias graves, tales como:
+\begin{itemize}
+    \item \textbf{Desabasto:} Interrupción en la provisión de alimentos, dejando a poblaciones vulnerables sin sustento.
+    \item \textbf{Desperdicio de alimentos:} Debido a la expiración de productos perecederos por falta de rotación (sistema PEPS - Primeras Entradas, Primeras Salidas) o por compras excesivas.
+    \item \textbf{Problemas de salud:} Derivados de menús monótonos que no cubren los requerimientos calóricos y de macronutrientes necesarios para personas sometidas a un alto desgaste físico.
+\end{itemize}
+Implementar un modelo de investigación de operaciones permitirá a Casa Monarca maximizar el impacto de cada peso donado o invertido, asegurando resiliencia operativa y mejorando la calidad de vida de los beneficiarios.
+
+\newpage
+
+\section{El Reto}
+
+\subsection{Objetivo}
+Desarrollar un modelo de programación lineal entera mixta (MILP) que minimice el costo total de adquisición de víveres para el comedor del albergue Casa Monarca, asegurando simultáneamente el cumplimiento de los requerimientos nutricionales diarios, la correcta rotación de inventarios para evitar mermas por caducidad, el respeto a las restricciones de espacio en almacén y la programación lógica de un menú cíclico factible para un horizonte de planeación determinado.
+
+\subsection{Definición Formal}
+El problema consiste en determinar la política óptima de compra de ingredientes ($x_{it}$) y la selección diaria de platillos ($y_{jt}$) a lo largo de un horizonte temporal ($T$), de modo que se minimice el costo total de adquisición. Esta decisión está sujeta a satisfacer los requerimientos nutricionales de la población albergada, mantener el inventario dentro de la capacidad física de la bodega, y asegurar que los ingredientes se utilicen antes de su fecha de caducidad.
+
+\subsection{Conjuntos e Índices}
+\begin{itemize}
+    \item $I$: Conjunto de insumos o ingredientes (ej. arroz, frijol, leche), indexado por $i$.
+    \item $J$: Conjunto de platillos o recetas (ej. tortas de jamón, pollo frito), indexado por $j$.
+    \item $T$: Conjunto de períodos (días) en el horizonte de planeación, indexado por $t$.
+    \item $K$: Conjunto de nutrientes a evaluar (ej. calorías, proteínas, carbohidratos), indexado por $k$.
+\end{itemize}
+
+\subsection{Variables de Decisión}
+\begin{itemize}
+    \item $x_{it} \ge 0$: Cantidad a comprar del insumo $i$ en el día $t$ (Variable continua o entera general).
+    \item $y_{jt} \in \{0,1\}$: Variable binaria que toma el valor de 1 si el platillo $j$ se sirve en el día $t$, y 0 en caso contrario.
+    \item $inv_{it} \ge 0$: Nivel de inventario del insumo $i$ al final del día $t$.
+    \item $desp_{it} \ge 0$: Cantidad de insumo $i$ desechado en el día $t$ por caducidad (se busca minimizar o penalizar).
+\end{itemize}
+
+\subsection{Parámetros}
+\begin{itemize}
+    \item $C_{it}$: Costo unitario de compra del insumo $i$ en el día $t$.
+    \item $Q_{ij}$: Cantidad requerida del insumo $i$ para preparar una porción del platillo $j$ (receta).
+    \item $N_{jk}$: Aporte del nutriente $k$ por cada porción del platillo $j$.
+    \item $ReqMin_{k}, ReqMax_{k}$: Requerimiento mínimo y máximo diario del nutriente $k$.
+    \item $Vol_{i}$: Volumen o espacio físico que ocupa una unidad del insumo $i$.
+    \item $CapBodega$: Capacidad máxima de almacenamiento en la cocina de Casa Monarca.
+    \item $Demanda_{t}$: Número de personas a alimentar en el día $t$.
+    \item $Cad_{i}$: Vida útil máxima del insumo perecedero $i$ (en días).
+\end{itemize}
+
+\subsection{Función Objetivo y Restricciones (Descripción)}
+
+\noindent \textbf{Función Objetivo:}
+Minimizar el costo total de adquisición de víveres a lo largo de todo el horizonte de planeación, sumando el producto del costo unitario ($C_{it}$) por la cantidad comprada ($x_{it}$). Se puede incluir una penalización por desperdicio.
+
+\noindent \textbf{Restricciones:}
+\begin{enumerate}
+    \item \textbf{Balance de Inventario:} El inventario al final del día $t$ es igual al inventario del día anterior, más las compras de hoy, menos el consumo generado por los platillos servidos hoy ($y_{jt} \times Q_{ij} \times Demanda_t$), menos las mermas.
+    \item \textbf{Capacidad de Almacenamiento:} El volumen total del inventario retenido al final de cada día no debe superar $CapBodega$.
+    \item \textbf{Satisfacción Nutricional:} La suma de los aportes nutricionales de los platillos servidos en el día $t$ debe encontrarse entre $ReqMin_k$ y $ReqMax_k$.
+    \item \textbf{Unicidad y Estructura del Menú:} Garantizar que se sirva exactamente un desayuno, una comida y una cena por día (y evitar repetición excesiva del mismo plato en la semana).
+    \item \textbf{Control de Caducidad:} Asegurar que un producto en inventario no exceda su vida útil $Cad_i$; de lo contrario, se convierte en merma.
+    \item \textbf{No negatividad e Integridad:} Garantizar que las compras e inventarios sean $\ge 0$ y que las variables de selección de menú sean binarias.
+\end{enumerate}
+
+\section{Analísis de literatura}
+
+
+\subsection{El Problema de la Dieta}
+El problema de la dieta es uno de los primeros y más famosos casos de aplicación de la programación lineal. Originado por George Stigler (1945), busca encontrar la combinación más económica de alimentos que satisfaga ciertas necesidades nutricionales. Aunque el modelo original asume divisibilidad total y no considera la palatabilidad, sentó las bases para el modelado nutricional moderno.
+
+Stigler planeto el siguiente problema:
+
+\begin{quote}
+  "Para un hombre moderadamente activo,  (economista), pesando 154 libras cuanto de cada una de las 77 comidas deberian ser comsumidas diariamente para que su consumo de 9 nutrientes sea, al menos, igual a la dosis dietetica recomendada (RDA), con el costo de la dieta siendo minima?"\autocite{dantzig1990}
+\end{quote}
+
+\begin{table}[H]
+\centering
+\caption{1943 RDAs for a moderately active 154-pound man.}
+\label{tab:rda1943}
+\begin{tabular}{@{}l r@{}}
+\hline
+\textbf{Nutrient} & \textbf{RDA} \\
+\hline
+Calories & 3,000 kcalories \\
+Protein & 70 grams \\
+Calcium & 0.8 grams \\
+Iron & 12 milligrams \\
+Vitamin A & 5,000 IU \\
+Thiamine (Vitamin B$_1$) & 1.8 milligrams \\
+Riboflavin (Vitamin B$_2$) & 2.7 milligrams \\
+Niacin & 18 milligrams \\
+Ascorbic Acid (Vitamin C) & 75 milligrams \\
+\hline
+\end{tabular}
+\end{table}
+
+
+El análisis de este problema es importante, dado a que se da un enfoque en encontrar el la mejor combinación de nutrientes mientras se mantiene el minimo costo posible, lo cual nos da un acercamiento sobre como podemos resolver el problema de satisfacer las necesidades dieteticas de los albergados por la orgranizacion. 
+
+Asimismo, se podria sugerir un enfoque mas preciso incluyendo tambien las necesidades nutricionales para grupos de distintas edades y sexos lo cual aunque puede presentar un problema estocastico, si su modelación matemática es posible podria darnos la oportunidad de tener un modelo mas complejo y representativo de la realidad.
+
+El problema sugiere un modelo de la estructura de programaciòn lineal:
+
+\begin{align*}
+  \mathbf{Min}\quad x\\
+  s.t\quad & d\leq Ax \leq b\\
+  x\geq 0
+\end{align*}
+
+
+
+
+\subsection{El Problema de Inventarios}
+La teoría de inventarios aborda cómo y cuándo reabastecer productos. En el contexto de alimentos, los modelos deterministas (como el lote económico o EOQ) deben adaptarse para incluir la \textit{perecibilidad}. Nahmias (1982) estableció fundamentos clave sobre cómo modelar productos con vida útil fija, lo cual es esencial para ingredientes como lácteos, carnes y verduras frescas en el albergue.
+
+El problema puede ser modelado usando teorias de control optimo, programación dinamica, y optimización de redes. 
+
+El problema matematico consiste en lo siguiente:
+
+Una tienda tiene en un tiempo $k$ $x_K$ objetos en su inventario. Depues ordena y recibe  $u_k$ objetos y vende $w_k$, donde $w_k$ sigue una distribución de probabilidad. Entonces:
+
+\begin{align}
+  x_{x+1}=x_k+u_k-w_k\\
+  u_k\geq 0
+\end{align}
+
+La tienda quiere minimizar $u_k$, por lo que:
+
+\begin{align}
+  \mathbf{Min}\sum_{k=0}^{T}c_k.
+\end{align}\autocite{enwiki:1187845455}
+
+
+\subsection{El Problema de los Menus}
+A diferencia del problema de la dieta pura, el problema de planificación de menús introduce variables binarias e índices de aceptabilidad para garantizar que la comida sea variada y del agrado de los comensales. Balintfy (1975) fue pionero en formular modelos de programación entera para menús institucionales (hospitales, escuelas), asegurando combinaciones gastronómicas lógicas.
+
+Es una familia de modelos cuyo objetivo es decidir cuánto y cuándo pedir/producir inventario para minimizar costos (o maximizar utilidad), cumpliendo la demanda y ciertas restricciones reales.
+
+Un modelo basico de esta familia es el \textit{Economic Order Quantity}:
+
+\begin{align}
+  q^* = \sqrt{\frac{2KD}{h}}
+\end{align}
+
+
+\chapter{Modelación con el uso de tecnicas de optimización}
+
+\section{Notación Matemática}
+
+Para claridad y concisión, adoptamos la siguiente notación compacta en la formulación algebraica:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{ll}
+\toprule
+\textbf{Símbolo} & \textbf{Descripción} \\
+\midrule
+$\mathbf{c}$ & Vector de costos unitarios de insumos \\
+$d_{t,c}$ & Demanda de porciones en día $t$, comida $c$ \\
+$\delta_{i,t}$ & Donaciones del insumo $i$ en día $t$ \\
+$I_{i,0}$ & Inventario inicial del insumo $i$ \\
+$B$ & Presupuesto total disponible \\
+$a_{i,m}$ & Coeficiente técnico: cantidad de insumo $i$ por porción del plato $m$ \\
+$\alpha_{m,t,c}$ & Indicador binario: disponibilidad de plato $m$ en día $t$, comida $c$ \\
+$\ell_i$ & Tamaño de lote comercial del insumo $i$ \\
+\midrule
+$x_{i,t}$ & Volumen (masa/cantidad) comprado del insumo $i$ en día $t$ \\
+$y_{i,t}$ & Número de lotes comprados del insumo $i$ en día $t$ \\
+$z_{m,t,c}$ & Número de porciones del plato $m$ preparadas en día $t$, comida $c$ \\
+$\gamma_{i,t}$ & Consumo (destrucción) del insumo $i$ durante día $t$ \\
+$\mu_{i,t}$ & Nivel de inventario del insumo $i$ al final del día $t$ \\
+$\Phi$ & Costo total del horizonte de optimización \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Conjuntos e Índices}
+Para garantizar la solidez del modelo y evitar inconsistencias en el análisis, el problema se organiza en las siguientes categorías independientes. Estos conjuntos sirven como la base principal para estructurar toda la información:
+
+\begin{itemize}
+    \item \textbf{Insumos ($I$)}: Define el catálogo de materia prima. Índice $i \in \{1, \dots, 30\}$.\\
+    $I = \{1:\text{Arroz}, \; 2:\text{Frijol}, \; 3:\text{Tortilla}, \; 4:\text{Tomate}, \; 5:\text{Cebolla}, \; 6:\text{Papa}, \; 7:\text{Zanahoria}, \; 8:\text{Espinaca}, \; 9:\text{Champiñones}, \; 10:\text{Cilantro}, \; 11:\text{Lechuga}, \; 12:\text{Pasta}, \; 13:\text{Chile}, \; 14:\text{Aceite}, \; 15:\text{Huevo}, \; 16:\text{Sal}, \; 17:\text{Leche}, \; 18:\text{Café}, \; 19:\text{Agua}, \; 20:\text{Azúcar}, \; 21:\text{Galletas}, \; 22:\text{Pasteles}, \; 23:\text{Pan}, \; 24:\text{Atún}, \; 25:\text{Pollo}, \; 26:\text{Res}, \; 27:\text{Refrescos}, \; 28:\text{Saborizantes}, \; 29:\text{Harina}, \; 30:\text{Cereal}\}$.
+
+    \item \textbf{Tiempo ($T$)}: Representa el horizonte de discretización de diferencias finitas en días. Índice $t \in \{1, \dots, 7\}$.\\
+    $T = \{1:\text{Lunes}, \; 2:\text{Martes}, \; 3:\text{Miércoles}, \; 4:\text{Jueves}, \; 5:\text{Viernes}, \; 6:\text{Sábado}, \; 7:\text{Domingo}\}$.
+
+    \item \textbf{Tiempos de Comida ($C$)}: Particiones del requerimiento calórico diario. Índice $c \in \{1, 2, 3\}$.\\
+    $C = \{1:\text{Desayuno}, \; 2:\text{Comida}, \; 3:\text{Cena}\}$.
+
+    \item \textbf{Platillos ($M$)}: El catálogo de transformaciones culinarias disponibles. Índice $m \in \{1, \dots, 12\}$.\\
+    $M = \{1:\text{Huevo con chorizo}, \; 2:\text{Huevo estrellado}, \; 3:\text{Huevo con jamón}, \; 4:\text{Tortas jamón/queso}, \; 5:\text{Huevo con papa}, \; 6:\text{Cereal con leche}, \; 7:\text{Huevo con salchicha}, \; 8:\text{Ensalada de atún}, \; 9:\text{Pollo frito/pasta}, \; 10:\text{Sándwich de pavo}, \; 11:\text{Milanesa de res}, \; 12:\text{Guiso de res}\}$.
+\end{itemize}
+
+\section{Definición de parámetros}
+
+\subsection{Parámetros Económicos y Lotes de Compra}
+Los precios de los insumos determinan directamente el costo total que el modelo busca minimizar. Por su parte, la especificación de los lotes define las presentaciones comerciales o cantidades exactas en las que se deben adquirir los productos (por ejemplo, cajas, bultos o paquetes enteros).
+
+\begin{longtable}{llcc|llcc}
+\toprule
+$i$ & \textbf{Insumo} & $c_i$ (\$ MXN) & $\ell_i$ & $i$ & \textbf{Insumo} & $c_i$ (\$ MXN) & $\ell_i$ \\
+\midrule
+1  & Arroz (kg) & 25.00 & 1 & 16 & Sal (kg) & 20.00 & 1 \\
+2  & Frijol (kg) & 38.00 & 1 & 17 & Leche (L) & 28.00 & 1 \\
+3  & Tortilla (kg) & 25.00 & 1 & 18 & Café (kg) & 150.00 & 1 \\
+4  & Tomate (kg) & 30.00 & 1 & 19 & Agua (L) & 2.50 & 1 \\
+5  & Cebolla (kg) & 25.00 & 1 & 20 & Azúcar (kg) & 35.00 & 1 \\
+6  & Papa (kg) & 35.00 & 1 & 21 & Galletas (paq) & 15.00 & 1 \\
+7  & Zanahoria (kg)& 20.00 & 1 & 22 & Pasteles (pz) & 100.00 & 1 \\
+8  & Espinaca (kg) & 30.00 & 1 & 23 & Pan (pz) & 3.00 & 1 \\
+9  & Champiñones (kg)& 90.00 & 1 & 24 & Atún (lata) & 20.00 & 1 \\
+10 & Cilantro (kg) & 50.00 & 1 & 25 & Pollo (kg) & 68.00 & 1 \\
+11 & Lechuga (pz) & 20.00 & 1 & 26 & Res (kg) & 180.00 & 1 \\
+12 & Pasta (paq) & 10.00 & 1 & 27 & Refrescos (L) & 15.00 & 1 \\
+13 & Chile (kg) & 40.00 & 1 & 28 & Saborizante (sobres)& 5.00 & 1 \\
+14 & Aceite (L) & 38.00 & 1 & 29 & Harina Maseca (kg) & 22.00 & 1 \\
+15 & Huevo (unidad)& 2.83 & 30 & 30 & Cereal (caja) & 60.00 & 1 \\
+\bottomrule
+\end{longtable}
+
+\subsection{Condiciones Iniciales, Demanda y Presupuesto}
+\begin{itemize}
+    \item \textbf{Presupuesto Global ($B$):} Cota máxima del presupuesto. $B = 50,000$.
+    \item \textbf{Demanda Constante ($d_{t,c}$):} Se modela constante $\forall t, c: d_{t,c} = 100$.
+\end{itemize}
+
+\subsection{Inventario Inicial ($I_{i,0}$)}
+Para proyectar los movimientos del almacén, es indispensable conocer las existencias iniciales. A partir del conteo físico actual de la bodega, se establecen las cantidades de partida para cada producto. Cualquier insumo que no aparezca en dicho registro se considerará con un inventario de cero.
+
+\begin{longtable}{llc|llc}
+\toprule
+$i$ & \textbf{Insumo} & $I_{i,0}$ (Unidades) & $i$ & \textbf{Insumo} & $I_{i,0}$ (Unidades) \\
+\midrule
+1  & Arroz & 100 & 14 & Aceite & 92 \\
+2  & Frijol & 330 & 17 & Leche & 7.5 \\
+8  & Espinaca & 0 & 20 & Azúcar & 156 \\
+12 & Pasta / Spaguetti & 300 & 21 & Galletas & 35 \\
+13 & Chile & 0 & 24 & Atún (latas) & 69 \\
+29 & Harina Maseca & 100 & - & (Resto de insumos) & 0 \\
+\bottomrule
+\end{longtable}
+
+\subsection{ Asignación de Calendario ($\alpha_{m,t,c}$)}
+Para asegurar el cumplimiento de la planeación establecida por la organización, se define un esquema de asignación de menús. Esta herramienta $\alpha_{m,t,c}$ organiza y fija con exactitud qué alimentos se prepararán en cada momento, evitando cruces o confusiones. Las comidas programadas son las siguientes:
+
+\begin{longtable}{lccc}
+\toprule
+$t \in T$ (Día) & $c=1$ (Desayuno) & $c=2$ (Comida) & $c=3$ (Cena) \\
+\midrule
+1: Lunes & $m=1$ (Huevo/chorizo) & $m=9$ (Pollo/pasta) & $m=10$ (Sándwich) \\
+2: Martes & $m=5$ (Huevo/papa) & $m=12$ (Guiso res) & $m=4$ (Tortas) \\
+3: Miércoles & $m=2$ (Huevo estrellado) & $m=11$ (Milanesa res) & $m=8$ (Ensalada atún) \\
+4: Jueves & $m=3$ (Huevo/jamón) & $m=9$ (Pollo/pasta) & $m=10$ (Sándwich) \\
+5: Viernes & $m=7$ (Huevo/salchicha) & $m=12$ (Guiso res) & $m=4$ (Tortas) \\
+6: Sábado & $m=6$ (Cereal/leche) & $m=8$ (Ensalada atún) & $m=10$ (Sándwich) \\
+7: Domingo & $m=1$ (Huevo/chorizo) & $m=11$ (Milanesa res) & $m=4$ (Tortas) \\
+\bottomrule
+\end{longtable}
+
+\subsection{Coeficientes Tecnológicos ($a_{i,m}$)}
+El operador de recetas $a_{i,m}$ define la cantidad exacta del insumo $i$ requerida para producir una (1) unidad del platillo $m$. Estos coeficientes derivan de la normalización del requerimiento diario sobre una población $\mathcal{N} = 100$.
+
+\begin{longtable}{p{4cm} p{11cm}}
+\toprule
+$m \in M$ (Platillo) & $a_{i,m} > 0$ (Insumos $i$ requeridos por 1 porción) \\
+\midrule
+\textbf{1: Huevo con chorizo} & 15:Huevo (1.2), 2:Frijol (0.03), 3:Tortilla (0.18), 14:Aceite (0.01), 18:Café (0.005) \\
+\textbf{2: Huevo estrellado} & 15:Huevo (1.2), 2:Frijol (0.03), 23:Pan (1.0), 14:Aceite (0.01), 18:Café (0.005) \\
+\textbf{3: Huevo con jamón} & 15:Huevo (1.2), 2:Frijol (0.03), 3:Tortilla (0.18), 14:Aceite (0.01), 18:Café (0.005) \\
+\textbf{4: Tortas jamón/queso}& 23:Pan (1.0), 4:Tomate (0.02), 5:Cebolla (0.01), 15:Huevo (0.5), 18:Café (0.005) \\
+\textbf{5: Huevo con papa} & 15:Huevo (1.2), 6:Papa (0.05), 2:Frijol (0.03), 3:Tortilla (0.18), 14:Aceite (0.01), 18:Café (0.005) \\
+\textbf{6: Cereal con leche} & 30:Cereal (0.08), 17:Leche (0.25), 18:Café (0.005) \\
+\textbf{7: Huevo/salchicha} & 15:Huevo (1.2), 2:Frijol (0.03), 3:Tortilla (0.18), 14:Aceite (0.01), 18:Café (0.005) \\
+\midrule
+\textbf{8: Ensalada de atún} & 24:Atún (0.5), 11:Lechuga (0.05), 4:Tomate (0.02), 21:Galletas (0.10) \\
+\textbf{9: Pollo frito/pasta} & 25:Pollo (0.12), 12:Pasta (0.06), 4:Tomate (0.03), 14:Aceite (0.015), 19:Agua (0.4) \\
+\textbf{10: Sándwich de pavo} & 23:Pan (2.0), 4:Tomate (0.02), 5:Cebolla (0.01), 6:Papa (0.04), 7:Zanahoria (0.03), 19:Agua (0.4) \\
+\textbf{11: Milanesa de res} & 26:Res (0.10), 14:Aceite (0.015), 3:Tortilla (0.15), 19:Agua (0.4) \\
+\textbf{12: Guiso de res} & 26:Res (0.10), 6:Papa (0.04), 4:Tomate (0.03), 3:Tortilla (0.15), 19:Agua (0.4) \\
+\bottomrule
+\end{longtable}
+
+\subsection{Vector de Donaciones Programadas ($\delta_{i,t}$)}
+Las entradas de productos al inventario provenientes del exterior, como las donaciones, se registran como cantidades fijas independientes a las compras. Partiendo de un escenario de escasez de donativos, únicamente se contemplarán ingresos por esta vía al inicio del periodo de planeación (el primer día, $t=1$):
+\begin{equation}
+    \delta_{1,1} = 50 \text{ (kg Arroz)}, \quad \delta_{2,1} = 50 \text{ (kg Frijol)}
+\end{equation}
+Para cualquier otro par $(i,t)$, $\delta_{i,t} = 0$.
+
+
+\section{Variables de Decisión}
+
+Para que el modelo tenga capacidad de decisión y pueda calcular la mejor solución posible, se establecen las siguientes variables operativas. Estos elementos representan las acciones concretas que se pueden ajustar y controlar dentro de la planeación:
+
+\subsection{Variables Enteras}
+\begin{itemize}
+    \item \textbf{Producción Culinaria ($z_{m,t,c}$):} Define la cantidad de porciones del platillo $m \in M$ a preparar en el día $t \in T$ para el tiempo de comida $c \in C$. Pertenece al espacio de los enteros no negativos para evitar la partición física de los platillos.
+    \begin{equation}
+        z_{m,t,c} \in \mathbb{Z}^{+} \cup \{0\} \quad \forall m, \forall t, \forall c
+    \end{equation}
+
+    \item \textbf{Lotes de Compra ($y_{i,t}$):} Define la cantidad de empaques o lotes comerciales del insumo $i \in I$ que se adquieren en el día $t \in T$.
+    \begin{equation}
+        y_{i,t} \in \mathbb{Z}^{+} \cup \{0\} \quad \forall i, \forall t
+    \end{equation}
+\end{itemize}
+
+\subsection{Variables Continuas}
+Dado que los insumos pueden fraccionarse al cocinarse (ej. 0.15 kg de arroz), el flujo de masa se modela sobre el campo de los números reales.
+\begin{itemize}
+    \item \textbf{Compras Netas ($x_{i,t}$):} Volumen o masa exacta adquirida del insumo $i$ en el día $t$.
+    \begin{equation}
+        x_{i,t} \in \mathbb{R}^{+} \cup \{0\} \quad \forall i, \forall t
+    \end{equation}
+
+    \item \textbf{Consumo Interno ($\gamma_{i,t}$):} Cantidad agregada del insumo $i$ destruida (transformada) por la cocina durante el día $t$.
+    \begin{equation}
+        \gamma_{i,t} \in \mathbb{R}^{+} \cup \{0\} \quad \forall i, \forall t
+    \end{equation}
+
+    \item \textbf{Nivel de inventario ($\mu_{i,t}$):} Nivel de inventario del insumo $i$ al final del periodo $t$. Representa la memoria del sistema dinámico discreto.
+    \begin{equation}
+        \mu_{i,t} \in \mathbb{R}^{+} \cup \{0\} \quad \forall i, \forall t
+    \end{equation}
+\end{itemize}
+
+\section{Función Objetivo}
+
+El objetivo principal es optimizar la asignación de recursos minimizando los gastos operativos. Esto equivale a calcular la combinación ideal de compras que, al multiplicarse por los precios fijos de los productos, resulte en el menor gasto posible. 
+
+Sea $\Phi$ el costo total proyectado para el horizonte temporal $T$, la formulación es:
+
+\begin{equation}
+    \min \Phi = \sum_{t \in T} \sum_{i \in I} c_i \cdot x_{i,t}
+\end{equation}
+
+Esta modelación de la función objetivo asegura que la organización adquiera estrictamente lo necesario para sostener el flujo de masa demandado, evitando compras superfluas.
+
+\section{Restricciones del Sistema}
+
+El espacio factible $\mathcal{F}$ queda unívocamente definido por la intersección de los siguientes hiperplanos y ecuaciones de flujo:
+
+\subsection{Satisfacción de la demanda)}
+Para garantizar que el flujo de salida cubra las necesidades poblacionales, proyectamos la suma de platillos sobre la cota mínima de demanda para cada estrato temporal y de comida:
+\begin{equation}
+    \sum_{m \in M} z_{m,t,c} \ge d_{t,c} \quad \forall t \in T, \forall c \in C
+\end{equation}
+
+\subsection{Activador de platillos}
+El espacio de decisiones de preparación $z_{m,t,c}$ debe colapsar a cero a menos que $\alpha_{m,t,c}$ lo permita. Utilizamos una constante $\mathcal{M}$ suficientemente grande (Big-M) como cota superior:
+\begin{equation}
+    z_{m,t,c} \le \mathcal{M} \cdot \alpha_{m,t,c} \quad \forall m \in M, \forall t \in T, \forall c \in C
+\end{equation}
+
+\subsection{Relación entre Menú e Insumo}
+La variable continua de consumo interno es el resultado del producto entre el operador de recetas $a_{i,m}$ y la producción $z_{m,t,c}$:
+\begin{equation}
+    \gamma_{i,t} \le \sum_{c \in C} \sum_{m \in M} a_{i,m} \cdot z_{m,t,c} \quad \forall i \in I, \forall t \in T
+\end{equation}
+
+\subsection{Lotes de Compra}
+La variable de compras $x_{i,t}$ se restringe a existir únicamente en múltiplos exactos de las presentaciones comerciales dictadas por $\ell_i$:
+\begin{equation}
+    x_{i,t} = \ell_i \cdot y_{i,t} \quad \forall i \in I, \forall t \in T
+\end{equation}
+
+\subsection{Límite Presupuestal}
+Para modelar la escasez de recursos, acotamos la norma de costo total a la cota del presupuesto $B$:
+\begin{equation}
+    \sum_{t \in T} \sum_{i \in I} c_i \cdot x_{i,t} \le B
+\end{equation}
+
+\subsection{Modelación del Inventario}
+Definimos el inventario inicial en $t=0$:
+\begin{equation}
+    \mu_{i,0} = I_{i,0} \quad \forall i \in I
+\end{equation}
+
+La conservación del inventario se modela sumando las fuentes (Compras y Donaciones) y restando los sumideros (Consumo):
+\begin{equation}
+    \mu_{i,t} = \mu_{i,t-1} + x_{i,t} + \delta_{i,t} - \gamma_{i,t} \quad \forall i \in I, \forall t \in T
+\end{equation}
+
+\section{Conclusión Analítica}
+El modelo propuesto se ha estructurado de manera completa y funcional. Al simplificar ciertas variables prácticas, como las fechas de caducidad y el límite de espacio físico en la bodega, se logró transformar un problema sumamente complejo en un formato manejable. Esto asegura que el sistema calculará la mejor solución posible para minimizar los gastos. De esta forma, se le entrega a Casa Monarca una herramienta confiable y precisa que le permitirá aprovechar al máximo sus recursos limitados y, en consecuencia, ampliar su impacto humanitario.
+
+
+
+
+\chapter{Resumen de Resultados}
+% ─────────────────────────────────────────────────────────────────────────────
+
+El solver encontró una solución con condición de término \textbf{óptima}. Los indicadores
+principales de la solución se resumen en la Tabla~\ref{tab:resumen}.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lc}
+\toprule
+\textbf{Indicador} & \textbf{Valor} \\
+\midrule
+Estado del solver              & \texttt{ok} \\
+Condición de término           & \texttt{optimal} \\
+Costo total óptimo $\Phi^*$    & \$~25{,}995.10 MXN \\
+Presupuesto disponible $B$     & \$~50{,}000.00 MXN \\
+Remanente presupuestal         & \$~24{,}004.90 MXN \\
+Utilización del presupuesto    & 51.99\% \\
+Días con compras               & 2 de 7 \\
+\bottomrule
+\end{tabular}
+\caption{Indicadores globales de la solución óptima.}
+\label{tab:resumen}
+\end{table}
+
+La solución concentra el 99.1\% del gasto en el primer día (\$~25{,}755.10 MXN),
+con una compra residual el martes (\$~240.00 MXN). Del presupuesto total, el
+48.01\% permanece sin utilizar, lo que indica un holgado margen operativo.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Plan Semanal de Comidas ($z_{m,t,c}$)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+La solución determina exactamente un platillo por tiempo de comida por día,
+con 100 porciones preparadas en cada ranura. La Tabla~\ref{tab:menu} muestra
+el menú óptimo para la semana.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Día} & \textbf{Desayuno} & \textbf{Comida} & \textbf{Cena} \\
+\midrule
+Lunes      & Huevo con chorizo  & Pollo frito/pasta  & Sándwich de pavo   \\
+Martes     & Huevo con papa     & Guiso de res       & Tortas jamón/queso \\
+Miércoles  & Huevo estrellado   & Milanesa de res    & Ensalada de atún   \\
+Jueves     & Huevo con jamón    & Pollo frito/pasta  & Sándwich de pavo   \\
+Viernes    & Huevo/salchicha    & Guiso de res       & Tortas jamón/queso \\
+Sábado     & Cereal con leche   & Ensalada de atún   & Sándwich de pavo   \\
+Domingo    & Huevo con chorizo  & Milanesa de res    & Tortas jamón/queso \\
+\midrule
+\multicolumn{4}{l}{\small Todas las celdas: 100 porciones preparadas ($z_{m,t,c} = 100$).} \\
+\bottomrule
+\end{tabular}
+\caption{Plan semanal de comidas óptimo.}
+\label{tab:menu}
+\end{table}
+
+\noindent\textbf{Observaciones:}
+\begin{itemize}
+    \item Se utilizan los 12 platillos disponibles del catálogo $M$, distribuidos
+          en los 21 tiempos de comida de la semana.
+    \item Las fuentes de proteína se diversifican a lo largo de la semana:
+          huevo (desayunos), pollo (lunes/jueves comida), res (martes/miércoles/viernes/domingo)
+          y atún (miércoles cena y sábado comida).
+    \item El platillo ``Cereal con leche'' aparece únicamente el sábado en el desayuno,
+          consumiendo la totalidad de las cajas de cereal disponibles en inventario.
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Plan de Compras Diarias ($x_{i,t}$ y $y_{i,t}$)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Lunes — Gasto: \$~25{,}755.10 MXN}
+
+El lunes concentra el grueso de las adquisiciones de la semana.
+La Tabla~\ref{tab:compras_lunes} detalla las compras del primer día.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{lrrc}
+\toprule
+\textbf{Insumo} & \textbf{Cantidad} & \textbf{Lotes $y_{i,1}$} & \textbf{Costo (\$~MXN)} \\
+\midrule
+Tortilla (kg)      & 150.00 & 150   & 3{,}750.00 \\
+Tomate (kg)        &  28.00 &  28   &    840.00  \\
+Cebolla (kg)       &   6.00 &   6   &    150.00  \\
+Papa (kg)          &  25.00 &  25   &    875.00  \\
+Zanahoria (kg)     &   3.00 &   3   &     60.00  \\
+Lechuga (pz)       &  10.00 &  10   &    200.00  \\
+Aceite (L)         &  12.00 &  12   &    456.00  \\
+Huevo (unidad)     & 870.00 &  29   & 2{,}462.10 \\
+Leche (L)          &  25.00 &  25   &    700.00  \\
+Café (kg)          &   5.00 &   5   &    750.00  \\
+Agua (L)           & 360.00 & 360   &    900.00  \\
+Galletas (paq)     &  20.00 &  20   &    300.00  \\
+Pan (pz)           & 1000.00 & 1000 & 3{,}000.00 \\
+Atún (lata)        & 100.00 & 100   & 2{,}000.00 \\
+Pollo (kg)         &  24.00 &  24   & 1{,}632.00 \\
+Res (kg)           &  40.00 &  40   & 7{,}200.00 \\
+Cereal (caja)      &   8.00 &   8   &    480.00  \\
+\midrule
+\textbf{Total}     &        &       & \textbf{25{,}755.10} \\
+\bottomrule
+\end{tabular}
+\caption{Compras del lunes ($t = 1$).}
+\label{tab:compras_lunes}
+\end{table}
+
+\subsection{Martes — Gasto: \$~240.00 MXN}
+
+El martes requiere únicamente dos insumos complementarios para cubrir
+las recetas de la semana que no estaban en inventario inicial.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{lrrc}
+\toprule
+\textbf{Insumo} & \textbf{Cantidad} & \textbf{Lotes $y_{i,2}$} & \textbf{Costo (\$~MXN)} \\
+\midrule
+Zanahoria (kg) & 6.00 & 6  & 120.00 \\
+Pasta (paq)    & 12.00 & 12 & 120.00 \\
+\midrule
+\textbf{Total} &       &    & \textbf{240.00} \\
+\bottomrule
+\end{tabular}
+\caption{Compras del martes ($t = 2$).}
+\label{tab:compras_martes}
+\end{table}
+
+\noindent De miércoles a domingo no se realizan compras ($x_{i,t} = 0 \;\forall i,\; t \in \{3,\ldots,7\}$).
+Esto responde a la estrategia de \emph{front-loading}: el modelo aprovecha el inventario
+inicial, las donaciones del lunes (50 kg Arroz + 50 kg Frijol) y las compras masivas del
+primer día para cubrir toda la semana sin recurrir al mercado diariamente.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Evolución del Inventario ($\mu_{i,t}$)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+La Tabla~\ref{tab:inventario} muestra el nivel de inventario al cierre de cada día
+para los insumos con actividad durante la semana (se omiten los insumos con $\mu_{i,t} = 0$
+en todo el horizonte).
+
+\begin{longtable}{lrrrrrrr}
+\toprule
+\textbf{Insumo} & \textbf{Lun} & \textbf{Mar} & \textbf{Mié} & \textbf{Jue} & \textbf{Vie} & \textbf{Sáb} & \textbf{Dom} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Arroz (kg)        & 150.00 & 150.00 & 150.00 & 150.00 & 150.00 & 150.00 & 150.00 \\
+Frijol (kg)       & 377.00 & 374.00 & 371.00 & 368.00 & 365.00 & 365.00 & 362.00 \\
+Tortilla (kg)     & 132.00 &  99.00 &  84.00 &  66.00 &  33.00 &  33.00 &   0.00 \\
+Tomate (kg)       &  23.00 &  18.00 &  16.00 &  11.00 &   6.00 &   2.00 &   0.00 \\
+Cebolla (kg)      &   5.00 &   4.00 &   4.00 &   3.00 &   2.00 &   1.00 &   0.00 \\
+Papa (kg)         &  21.00 &  12.00 &  12.00 &   8.00 &   4.00 &   0.00 &   0.00 \\
+Zanahoria (kg)    &   0.00 &   6.00 &   6.00 &   3.00 &   3.00 &   0.00 &   0.00 \\
+Lechuga (pz)      &  10.00 &  10.00 &   5.00 &   5.00 &   5.00 &   0.00 &   0.00 \\
+Pasta (paq)       & 294.00 & 306.00 & 306.00 & 300.00 & 300.00 & 300.00 & 300.00 \\
+Aceite (L)        & 101.50 & 100.50 &  98.00 &  95.50 &  94.50 &  94.50 &  92.00 \\
+Huevo (unidad)    & 750.00 & 580.00 & 460.00 & 340.00 & 170.00 & 170.00 &   0.00 \\
+Leche (L)         &  32.50 &  32.50 &  32.50 &  32.50 &  32.50 &   7.50 &   7.50 \\
+Café (kg)         &   4.50 &   3.50 &   3.00 &   2.50 &   1.50 &   1.00 &   0.00 \\
+Agua (L)          & 280.00 & 240.00 & 200.00 & 120.00 &  80.00 &  40.00 &   0.00 \\
+Azúcar (kg)       & 156.00 & 156.00 & 156.00 & 156.00 & 156.00 & 156.00 & 156.00 \\
+Galletas (paq)    &  55.00 &  55.00 &  45.00 &  45.00 &  45.00 &  35.00 &  35.00 \\
+Pan (pz)          & 800.00 & 700.00 & 600.00 & 400.00 & 300.00 & 100.00 &   0.00 \\
+Atún (lata)       & 169.00 & 169.00 & 119.00 & 119.00 & 119.00 &  69.00 &  69.00 \\
+Pollo (kg)        &  12.00 &  12.00 &  12.00 &   0.00 &   0.00 &   0.00 &   0.00 \\
+Res (kg)          &  40.00 &  30.00 &  20.00 &  20.00 &  10.00 &  10.00 &   0.00 \\
+Harina Maseca (kg)& 100.00 & 100.00 & 100.00 & 100.00 & 100.00 & 100.00 & 100.00 \\
+Cereal (caja)     &   8.00 &   8.00 &   8.00 &   8.00 &   8.00 &   0.00 &   0.00 \\
+\caption{Inventario al cierre de cada día $\mu_{i,t}$.}
+\label{tab:inventario}
+\end{longtable}
+
+\noindent\textbf{Observaciones clave:}
+\begin{itemize}
+    \item \textbf{Arroz y Frijol:} no requieren compras. El inventario inicial (100 kg y 330 kg,
+          respectivamente) más las donaciones del lunes (+50 kg cada uno) cubren el consumo
+          semanal con amplio remanente al domingo ($\mu_{Arroz,7} = 150$, $\mu_{Frijol,7} = 362$).
+    \item \textbf{Inventarios que alcanzan cero al domingo:} Tortilla, Tomate, Cebolla, Huevo,
+          Café, Agua, Pan y Res se agotan exactamente al fin de la semana, indicando un
+          aprovechamiento ajustado de los recursos adquiridos.
+    \item \textbf{Inventarios estáticos:} Azúcar, Harina Maseca y Pasta no se consumen en
+          ninguna receta activa del menú, por lo que mantienen su nivel constante toda la semana.
+          Representan un excedente transferible a la siguiente iteración del plan.
+    \item \textbf{Zanahoria:} presenta inventario cero el lunes a pesar de haberse comprado,
+          porque la compra del martes (6 kg) cubre los requerimientos del sándwich de pavo
+          de los días posteriores.
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Consumo Interno Diario ($\gamma_{i,t}$)}
+% ─────────────────────────────────────────────────────────────────────────────
+
+La Tabla~\ref{tab:consumo} presenta el flujo de destrucción (consumo en cocina) de cada
+insumo por día. Solo se muestran los insumos con consumo positivo en al menos un día.
+
+\begin{longtable}{lrrrrrrr}
+\toprule
+\textbf{Insumo} & \textbf{Lun} & \textbf{Mar} & \textbf{Mié} & \textbf{Jue} & \textbf{Vie} & \textbf{Sáb} & \textbf{Dom} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Frijol (kg)     &  3.0 &  3.0 &  3.0 &  3.0 &  3.0 &  0.0 &  3.0 \\
+Tortilla (kg)   & 18.0 & 33.0 & 15.0 & 18.0 & 33.0 &  0.0 & 33.0 \\
+Tomate (kg)     &  5.0 &  5.0 &  2.0 &  5.0 &  5.0 &  4.0 &  2.0 \\
+Cebolla (kg)    &  1.0 &  1.0 &  0.0 &  1.0 &  1.0 &  1.0 &  1.0 \\
+Papa (kg)       &  4.0 &  9.0 &  0.0 &  4.0 &  4.0 &  4.0 &  0.0 \\
+Zanahoria (kg)  &  3.0 &  0.0 &  0.0 &  3.0 &  0.0 &  3.0 &  0.0 \\
+Lechuga (pz)    &  0.0 &  0.0 &  5.0 &  0.0 &  0.0 &  5.0 &  0.0 \\
+Pasta (paq)     &  6.0 &  0.0 &  0.0 &  6.0 &  0.0 &  0.0 &  0.0 \\
+Aceite (L)      &  2.5 &  1.0 &  2.5 &  2.5 &  1.0 &  0.0 &  2.5 \\
+Huevo (unidad)  &120.0 &170.0 &120.0 &120.0 &170.0 &  0.0 &170.0 \\
+Leche (L)       &  0.0 &  0.0 &  0.0 &  0.0 &  0.0 & 25.0 &  0.0 \\
+Café (kg)       &  0.5 &  1.0 &  0.5 &  0.5 &  1.0 &  0.5 &  1.0 \\
+Agua (L)        & 80.0 & 40.0 & 40.0 & 80.0 & 40.0 & 40.0 & 40.0 \\
+Galletas (paq)  &  0.0 &  0.0 & 10.0 &  0.0 &  0.0 & 10.0 &  0.0 \\
+Pan (pz)        &200.0 &100.0 &100.0 &200.0 &100.0 &200.0 &100.0 \\
+Atún (lata)     &  0.0 &  0.0 & 50.0 &  0.0 &  0.0 & 50.0 &  0.0 \\
+Pollo (kg)      & 12.0 &  0.0 &  0.0 & 12.0 &  0.0 &  0.0 &  0.0 \\
+Res (kg)        &  0.0 & 10.0 & 10.0 &  0.0 & 10.0 &  0.0 & 10.0 \\
+Cereal (caja)   &  0.0 &  0.0 &  0.0 &  0.0 &  0.0 &  8.0 &  0.0 \\
+\caption{Consumo interno diario $\gamma_{i,t}$ (solo insumos con consumo $> 0$).}
+\label{tab:consumo}
+\end{longtable}
+
+\noindent Los insumos de mayor volumen semanal total son: Pan (1{,}000 pz),
+Agua (360 L), Huevo (870 unidades) y Tortilla (150 kg). El consumo de Leche
+se concentra exclusivamente el sábado, por ser el único día con cereal en el menú.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Análisis de Costos}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Desglose por Día}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Día} & \textbf{Gasto (\$~MXN)} & \textbf{\% del Total} \\
+\midrule
+Lunes      & 25{,}755.10 & 99.08\% \\
+Martes     &     240.00  &  0.92\% \\
+Miércoles  &       0.00  &  0.00\% \\
+Jueves     &       0.00  &  0.00\% \\
+Viernes    &       0.00  &  0.00\% \\
+Sábado     &       0.00  &  0.00\% \\
+Domingo    &       0.00  &  0.00\% \\
+\midrule
+\textbf{Total}        & \textbf{25{,}995.10} & 100.00\% \\
+Presupuesto $B$       & 50{,}000.00 & --- \\
+Remanente             & 24{,}004.90 & 48.01\% \\
+\bottomrule
+\end{tabular}
+\caption{Resumen de costos por día y comparación con el presupuesto.}
+\label{tab:costos_dia}
+\end{table}
+
+\subsection{Principales Impulsores de Costo}
+
+La Tabla~\ref{tab:top5} presenta los cinco insumos que concentran el mayor costo
+de adquisición, junto con su participación relativa en el gasto total.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{clccc}
+\toprule
+\textbf{Rango} & \textbf{Insumo} & \textbf{Cantidad} & \textbf{Costo (\$~MXN)} & \textbf{\% del Total} \\
+\midrule
+1 & Res (kg)        & 40 kg        & 7{,}200.00 & 27.70\% \\
+2 & Pan (pz)        & 1{,}000 pz   & 3{,}000.00 & 11.54\% \\
+3 & Huevo (unidad)  & 870 unidades & 2{,}462.10 &  9.47\% \\
+4 & Atún (lata)     & 100 latas    & 2{,}000.00 &  7.69\% \\
+5 & Pollo (kg)      & 24 kg        & 1{,}632.00 &  6.28\% \\
+\midrule
+  & \textit{Subtotal top-5} & & \textit{16{,}294.10} & \textit{62.68\%} \\
+  & Resto de insumos        & & \textit{9{,}701.00}  & \textit{37.32\%} \\
+\bottomrule
+\end{tabular}
+\caption{Cinco principales impulsores de costo.}
+\label{tab:top5}
+\end{table}
+
+Los insumos proteicos (Res, Huevo, Atún, Pollo) representan colectivamente el
+\textbf{51.14\%} del gasto total, lo que refleja el enfoque nutritivo del menú.
+El Pan ocupa el segundo lugar en costo absoluto a pesar de su bajo precio unitario
+(\$3/pz), por el elevado volumen requerido (1{,}000 pz semanales).
+
+
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Conclusiones}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\begin{enumerate}
+    \item \textbf{Optimalidad global verificada.} El solver reporta condición \texttt{optimal},
+          garantizando que no existe ningún plan de compras y menús con menor costo que
+          \$~25{,}995.10 MXN para las restricciones establecidas.
+
+    \item \textbf{Amplio margen presupuestal.} El 48.01\% del presupuesto (\$~24{,}004.90 MXN)
+          queda sin utilizar. Este holgura puede aprovecharse para: (a) incrementar porciones
+          preparadas si la población beneficiaria supera los 100 por comida, (b) añadir platillos
+          de mayor costo o mayor diversidad nutricional, o (c) constituir una reserva ante
+          imprevistos de precio o donaciones.
+
+    \item \textbf{Estrategia de compra en bloque (\emph{front-loading}).} El modelo concentra
+          el 99.1\% del gasto en el día 1, minimizando transacciones con proveedores y
+          simplificando la logística de abastecimiento.
+
+    \item \textbf{Aprovechamiento del inventario inicial y donaciones.} El Arroz y el Frijol
+          no requieren compras semanales gracias al stock inicial y a las donaciones del
+          lunes, representando un ahorro de \$~4{,}400 MXN potenciales (150 kg Arroz $\times$
+          \$25 + 150 kg Frijol $\times$ \$38 equivalentes al consumo semanal cubierto).
+
+    \item \textbf{Condición terminal satisfecha.} Los insumos perecederos de alto consumo
+          (Tortilla, Huevo, Pan, Res, Agua, Café) alcanzan exactamente cero al domingo,
+          eliminando desperdicios y cumpliendo la restricción $\mu_{i,7} \geq I_{i,0}$
+          para todos los insumos con valor inicial en la bodega.
+
+    \item \textbf{Costo per cápita.} Con 100 beneficiarios y 21 comidas en la semana, el
+          costo por porción servida es de \$~25{,}995.10 / (100 $\times$ 21)
+          $\approx$ \textbf{\$~12.38 MXN por porción}.
+\end{enumerate}
+
+
+\nocite{*}
+
+\printbibliography
+
+
+
+\end{document}
