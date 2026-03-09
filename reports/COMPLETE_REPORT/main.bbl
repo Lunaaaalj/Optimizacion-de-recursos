@@ -1,0 +1,807 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{apa/apasortcite//global/global/global}
+    \entry{acnur2025_un_hogar_en_mexico}{misc}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=2945bab0e9bc09cac35bc8b5ee76cfcd}{%
+           family={{ACNUR --- Agencia de la ONU para los Refugiados}},
+           familyi={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{2945bab0e9bc09cac35bc8b5ee76cfcd}
+      \strng{fullhash}{2945bab0e9bc09cac35bc8b5ee76cfcd}
+      \strng{fullhashraw}{2945bab0e9bc09cac35bc8b5ee76cfcd}
+      \strng{bibnamehash}{2945bab0e9bc09cac35bc8b5ee76cfcd}
+      \strng{authorbibnamehash}{2945bab0e9bc09cac35bc8b5ee76cfcd}
+      \strng{authornamehash}{2945bab0e9bc09cac35bc8b5ee76cfcd}
+      \strng{authorfullhash}{2945bab0e9bc09cac35bc8b5ee76cfcd}
+      \strng{authorfullhashraw}{2945bab0e9bc09cac35bc8b5ee76cfcd}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://www.acnur.org/mx/noticias/comunicados-de-prensa/acnur-presenta-su-informe-de-resultados-2024-un-hogar-en-mexico}}
+      \field{note}{Accedido el 22 de febrero de 2026; Publicado 29 abr. 2025}
+      \field{title}{Un hogar en México: Principales resultados de ACNUR México en 2024}
+      \field{year}{2025}
+      \true{nocite}
+    \endentry
+    \entry{balintfy1975}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=12d00c1a7870e7004b7dad08ddfa4b03}{%
+           family={Balintfy},
+           familyi={B\bibinitperiod},
+           given={Joseph\bibnamedelima L.},
+           giveni={J\bibinitperiod\bibinitdelim L\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{12d00c1a7870e7004b7dad08ddfa4b03}
+      \strng{fullhash}{12d00c1a7870e7004b7dad08ddfa4b03}
+      \strng{fullhashraw}{12d00c1a7870e7004b7dad08ddfa4b03}
+      \strng{bibnamehash}{12d00c1a7870e7004b7dad08ddfa4b03}
+      \strng{authorbibnamehash}{12d00c1a7870e7004b7dad08ddfa4b03}
+      \strng{authornamehash}{12d00c1a7870e7004b7dad08ddfa4b03}
+      \strng{authorfullhash}{12d00c1a7870e7004b7dad08ddfa4b03}
+      \strng{authorfullhashraw}{12d00c1a7870e7004b7dad08ddfa4b03}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Operations Research}
+      \field{number}{1}
+      \field{title}{A Mathematical Programming System for Food Management Applications}
+      \field{volume}{23}
+      \field{year}{1975}
+      \true{nocite}
+      \field{pages}{162\bibrangedash 184}
+      \range{pages}{23}
+      \verb{doi}
+      \verb 10.1287/opre.23.1.162
+      \endverb
+    \endentry
+    \entry{iadb2024_tipos_migracion}{misc}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=c183d6a4fd99d7b986559532a0e9a285}{%
+           family={{Banco Interamericano de Desarrollo (BID)}},
+           familyi={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{c183d6a4fd99d7b986559532a0e9a285}
+      \strng{fullhash}{c183d6a4fd99d7b986559532a0e9a285}
+      \strng{fullhashraw}{c183d6a4fd99d7b986559532a0e9a285}
+      \strng{bibnamehash}{c183d6a4fd99d7b986559532a0e9a285}
+      \strng{authorbibnamehash}{c183d6a4fd99d7b986559532a0e9a285}
+      \strng{authornamehash}{c183d6a4fd99d7b986559532a0e9a285}
+      \strng{authorfullhash}{c183d6a4fd99d7b986559532a0e9a285}
+      \strng{authorfullhashraw}{c183d6a4fd99d7b986559532a0e9a285}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://www.iadb.org/es/blog/migracion/tipos-de-migracion-concepto-y-analisis-en-el-contexto-regional}}
+      \field{note}{Accedido el 22 de febrero de 2026}
+      \field{title}{Tipos de migración: concepto y análisis en el contexto regional}
+      \field{year}{2024}
+      \true{nocite}
+    \endentry
+    \entry{uvm2025_migracion_mexico}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=682b1b958761691864107aa9562b946c}{%
+           family={{Centro de Opinión Pública, Universidad del Valle de México}},
+           familyi={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{682b1b958761691864107aa9562b946c}
+      \strng{fullhash}{682b1b958761691864107aa9562b946c}
+      \strng{fullhashraw}{682b1b958761691864107aa9562b946c}
+      \strng{bibnamehash}{682b1b958761691864107aa9562b946c}
+      \strng{authorbibnamehash}{682b1b958761691864107aa9562b946c}
+      \strng{authornamehash}{682b1b958761691864107aa9562b946c}
+      \strng{authorfullhash}{682b1b958761691864107aa9562b946c}
+      \strng{authorfullhashraw}{682b1b958761691864107aa9562b946c}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://opinionpublica.uvm.mx/estudios/migracion-en-mexico-desafios-mas-alla-de-la-frontera/}}
+      \field{month}{6~17}
+      \field{note}{Accedido el 22 de febrero de 2026}
+      \field{title}{Migración en México, desafíos más allá de la frontera}
+      \field{year}{2025}
+      \true{nocite}
+    \endentry
+    \entry{dantzig1990}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=212fe65a17e797b6dbce0c3731498b2c}{%
+           family={Dantzig},
+           familyi={D\bibinitperiod},
+           given={George\bibnamedelima B.},
+           giveni={G\bibinitperiod\bibinitdelim B\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{212fe65a17e797b6dbce0c3731498b2c}
+      \strng{fullhash}{212fe65a17e797b6dbce0c3731498b2c}
+      \strng{fullhashraw}{212fe65a17e797b6dbce0c3731498b2c}
+      \strng{bibnamehash}{212fe65a17e797b6dbce0c3731498b2c}
+      \strng{authorbibnamehash}{212fe65a17e797b6dbce0c3731498b2c}
+      \strng{authornamehash}{212fe65a17e797b6dbce0c3731498b2c}
+      \strng{authorfullhash}{212fe65a17e797b6dbce0c3731498b2c}
+      \strng{authorfullhashraw}{212fe65a17e797b6dbce0c3731498b2c}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Interfaces}
+      \field{number}{4}
+      \field{title}{The Diet Problem}
+      \field{volume}{20}
+      \field{year}{1990}
+      \field{pages}{43\bibrangedash 47}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1287/inte.20.4.43
+      \endverb
+    \endentry
+    \entry{concepto2026_migracion}{misc}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=8dd3bf5c1415035bbbabd62918dde561}{%
+           family={{Editorial Etecé}},
+           familyi={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{8dd3bf5c1415035bbbabd62918dde561}
+      \strng{fullhash}{8dd3bf5c1415035bbbabd62918dde561}
+      \strng{fullhashraw}{8dd3bf5c1415035bbbabd62918dde561}
+      \strng{bibnamehash}{8dd3bf5c1415035bbbabd62918dde561}
+      \strng{authorbibnamehash}{8dd3bf5c1415035bbbabd62918dde561}
+      \strng{authornamehash}{8dd3bf5c1415035bbbabd62918dde561}
+      \strng{authorfullhash}{8dd3bf5c1415035bbbabd62918dde561}
+      \strng{authorfullhashraw}{8dd3bf5c1415035bbbabd62918dde561}
+      \field{sortinit}{E}
+      \field{sortinithash}{8da8a182d344d5b9047633dfc0cc9131}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://concepto.de/migracion/}}
+      \field{note}{Accedido el 22 de febrero de 2026}
+      \field{title}{Migración}
+      \field{year}{2026}
+      \true{nocite}
+    \endentry
+    \entry{doi:10.1287/opre.49.1.1.11187}{article}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=9a22b4ac9475e271153fc50f9d9f29d4}{%
+           family={Garille},
+           familyi={G\bibinitperiod},
+           given={Susan\bibnamedelima Garner},
+           giveni={S\bibinitperiod\bibinitdelim G\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c308091271df40c9e60c06ff6b26eb98}{%
+           family={Gass},
+           familyi={G\bibinitperiod},
+           given={Saul\bibnamedelima I.},
+           giveni={S\bibinitperiod\bibinitdelim I\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{dfd2d4fc613e036d05c2ec778308ade7}
+      \strng{fullhash}{dfd2d4fc613e036d05c2ec778308ade7}
+      \strng{fullhashraw}{dfd2d4fc613e036d05c2ec778308ade7}
+      \strng{bibnamehash}{dfd2d4fc613e036d05c2ec778308ade7}
+      \strng{authorbibnamehash}{dfd2d4fc613e036d05c2ec778308ade7}
+      \strng{authornamehash}{dfd2d4fc613e036d05c2ec778308ade7}
+      \strng{authorfullhash}{dfd2d4fc613e036d05c2ec778308ade7}
+      \strng{authorfullhashraw}{dfd2d4fc613e036d05c2ec778308ade7}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We review Stigler's diet problem, its impact on linear programming and operations research, and we determine minimum cost diets using updated nutritional and cost data. We also discuss how Stigler's diet problem formulation and its extensions have, over the years, influenced dietitians and nutritionists in their search for more wholesome but cost-effective diets.}
+      \field{journaltitle}{Operations Research}
+      \field{number}{1}
+      \field{title}{Stigler's Diet Problem Revisited}
+      \field{volume}{49}
+      \field{year}{2001}
+      \true{nocite}
+      \field{pages}{1\bibrangedash 13}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1287/opre.49.1.1.11187
+      \endverb
+      \verb{eprint}
+      \verb https://doi.org/10.1287/opre.49.1.1.11187
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1287/opre.49.1.1.11187
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1287/opre.49.1.1.11187
+      \endverb
+    \endentry
+    \entry{ceey2025_movilidad_social}{book}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=ff21745124990a586054001833853f56}{%
+           family={Moreno\bibnamedelima Treviño},
+           familyi={M\bibinitperiod\bibinitdelim T\bibinitperiod},
+           given={Jorge\bibnamedelima Omar},
+           giveni={J\bibinitperiod\bibinitdelim O\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=3ac770d5a45414ac8557de0a5e318c13}{%
+           family={Monroy-Gómez-Franco},
+           familyi={M\bibinithyphendelim G\bibinithyphendelim F\bibinitperiod},
+           given={Luis},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a8411768b63d73e20b0732b62b49d7b7}{%
+           family={Vélez\bibnamedelima Grajales},
+           familyi={V\bibinitperiod\bibinitdelim G\bibinitperiod},
+           given={Roberto},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{location}{1}{%
+        {Ciudad de México}%
+      }
+      \list{publisher}{1}{%
+        {Centro de Estudios Espinosa Yglesias}%
+      }
+      \strng{namehash}{b2c90d49692c41ef72b5180c57eea739}
+      \strng{fullhash}{156aeadb3bcbb7b4b993972ea06f36cc}
+      \strng{fullhashraw}{156aeadb3bcbb7b4b993972ea06f36cc}
+      \strng{bibnamehash}{156aeadb3bcbb7b4b993972ea06f36cc}
+      \strng{authorbibnamehash}{156aeadb3bcbb7b4b993972ea06f36cc}
+      \strng{authornamehash}{b2c90d49692c41ef72b5180c57eea739}
+      \strng{authorfullhash}{156aeadb3bcbb7b4b993972ea06f36cc}
+      \strng{authorfullhashraw}{156aeadb3bcbb7b4b993972ea06f36cc}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Disponible en: \url{https://ceey.org.mx/wp-content/uploads/2025/11/Informe-Movilidad-Social-en-Nuevo-Leon-2025.pdf}}
+      \field{title}{Informe de movilidad social en Nuevo León 2025}
+      \field{year}{2025}
+      \true{nocite}
+    \endentry
+    \entry{nahmias1982}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=957725d6f661183d7cc0047cb2a3c629}{%
+           family={Nahmias},
+           familyi={N\bibinitperiod},
+           given={Steven},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{957725d6f661183d7cc0047cb2a3c629}
+      \strng{fullhash}{957725d6f661183d7cc0047cb2a3c629}
+      \strng{fullhashraw}{957725d6f661183d7cc0047cb2a3c629}
+      \strng{bibnamehash}{957725d6f661183d7cc0047cb2a3c629}
+      \strng{authorbibnamehash}{957725d6f661183d7cc0047cb2a3c629}
+      \strng{authornamehash}{957725d6f661183d7cc0047cb2a3c629}
+      \strng{authorfullhash}{957725d6f661183d7cc0047cb2a3c629}
+      \strng{authorfullhashraw}{957725d6f661183d7cc0047cb2a3c629}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Operations Research}
+      \field{number}{4}
+      \field{title}{Perishable Inventory Theory: A Review}
+      \field{volume}{30}
+      \field{year}{1982}
+      \true{nocite}
+      \field{pages}{680\bibrangedash 708}
+      \range{pages}{29}
+      \verb{doi}
+      \verb 10.1287/opre.30.4.680
+      \endverb
+    \endentry
+    \entry{stigler1945}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=3e27ef99bf72db975408034556b655be}{%
+           family={Stigler},
+           familyi={S\bibinitperiod},
+           given={George\bibnamedelima J.},
+           giveni={G\bibinitperiod\bibinitdelim J\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{3e27ef99bf72db975408034556b655be}
+      \strng{fullhash}{3e27ef99bf72db975408034556b655be}
+      \strng{fullhashraw}{3e27ef99bf72db975408034556b655be}
+      \strng{bibnamehash}{3e27ef99bf72db975408034556b655be}
+      \strng{authorbibnamehash}{3e27ef99bf72db975408034556b655be}
+      \strng{authornamehash}{3e27ef99bf72db975408034556b655be}
+      \strng{authorfullhash}{3e27ef99bf72db975408034556b655be}
+      \strng{authorfullhashraw}{3e27ef99bf72db975408034556b655be}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Farm Economics}
+      \field{number}{2}
+      \field{title}{The Cost of Subsistence}
+      \field{urlday}{22}
+      \field{urlmonth}{2}
+      \field{urlyear}{2026}
+      \field{volume}{27}
+      \field{year}{1945}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \field{pages}{303\bibrangedash 314}
+      \range{pages}{12}
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/1243171
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/1243171
+      \endverb
+    \endentry
+    \entry{enwiki:1187845455}{misc}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=b6aea1a416c89509a7df1cbb69249cb6}{%
+           family={{Wikipedia contributors}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{fullhash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{fullhashraw}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{bibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorfullhashraw}{b6aea1a416c89509a7df1cbb69249cb6}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Wikipedia, The Free Encyclopedia}
+      \field{note}{Online; accessed 22-February-2026}
+      \field{title}{Inventory theory}
+      \field{year}{2023}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/w/index.php?title=Inventory_theory&oldid=1187845455
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/w/index.php?title=Inventory_theory&oldid=1187845455
+      \endverb
+    \endentry
+  \enddatalist
+  \datalist[entry]{apa/global//global/global/global}
+    \entry{acnur2025_un_hogar_en_mexico}{misc}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=2945bab0e9bc09cac35bc8b5ee76cfcd}{%
+           family={{ACNUR --- Agencia de la ONU para los Refugiados}},
+           familyi={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{2945bab0e9bc09cac35bc8b5ee76cfcd}
+      \strng{fullhash}{2945bab0e9bc09cac35bc8b5ee76cfcd}
+      \strng{fullhashraw}{2945bab0e9bc09cac35bc8b5ee76cfcd}
+      \strng{bibnamehash}{2945bab0e9bc09cac35bc8b5ee76cfcd}
+      \strng{authorbibnamehash}{2945bab0e9bc09cac35bc8b5ee76cfcd}
+      \strng{authornamehash}{2945bab0e9bc09cac35bc8b5ee76cfcd}
+      \strng{authorfullhash}{2945bab0e9bc09cac35bc8b5ee76cfcd}
+      \strng{authorfullhashraw}{2945bab0e9bc09cac35bc8b5ee76cfcd}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://www.acnur.org/mx/noticias/comunicados-de-prensa/acnur-presenta-su-informe-de-resultados-2024-un-hogar-en-mexico}}
+      \field{note}{Accedido el 22 de febrero de 2026; Publicado 29 abr. 2025}
+      \field{title}{Un hogar en México: Principales resultados de ACNUR México en 2024}
+      \field{year}{2025}
+      \true{nocite}
+    \endentry
+    \entry{balintfy1975}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=12d00c1a7870e7004b7dad08ddfa4b03}{%
+           family={Balintfy},
+           familyi={B\bibinitperiod},
+           given={Joseph\bibnamedelima L.},
+           giveni={J\bibinitperiod\bibinitdelim L\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{12d00c1a7870e7004b7dad08ddfa4b03}
+      \strng{fullhash}{12d00c1a7870e7004b7dad08ddfa4b03}
+      \strng{fullhashraw}{12d00c1a7870e7004b7dad08ddfa4b03}
+      \strng{bibnamehash}{12d00c1a7870e7004b7dad08ddfa4b03}
+      \strng{authorbibnamehash}{12d00c1a7870e7004b7dad08ddfa4b03}
+      \strng{authornamehash}{12d00c1a7870e7004b7dad08ddfa4b03}
+      \strng{authorfullhash}{12d00c1a7870e7004b7dad08ddfa4b03}
+      \strng{authorfullhashraw}{12d00c1a7870e7004b7dad08ddfa4b03}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Operations Research}
+      \field{number}{1}
+      \field{title}{A Mathematical Programming System for Food Management Applications}
+      \field{volume}{23}
+      \field{year}{1975}
+      \true{nocite}
+      \field{pages}{162\bibrangedash 184}
+      \range{pages}{23}
+      \verb{doi}
+      \verb 10.1287/opre.23.1.162
+      \endverb
+    \endentry
+    \entry{iadb2024_tipos_migracion}{misc}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=c183d6a4fd99d7b986559532a0e9a285}{%
+           family={{Banco Interamericano de Desarrollo (BID)}},
+           familyi={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{c183d6a4fd99d7b986559532a0e9a285}
+      \strng{fullhash}{c183d6a4fd99d7b986559532a0e9a285}
+      \strng{fullhashraw}{c183d6a4fd99d7b986559532a0e9a285}
+      \strng{bibnamehash}{c183d6a4fd99d7b986559532a0e9a285}
+      \strng{authorbibnamehash}{c183d6a4fd99d7b986559532a0e9a285}
+      \strng{authornamehash}{c183d6a4fd99d7b986559532a0e9a285}
+      \strng{authorfullhash}{c183d6a4fd99d7b986559532a0e9a285}
+      \strng{authorfullhashraw}{c183d6a4fd99d7b986559532a0e9a285}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://www.iadb.org/es/blog/migracion/tipos-de-migracion-concepto-y-analisis-en-el-contexto-regional}}
+      \field{note}{Accedido el 22 de febrero de 2026}
+      \field{title}{Tipos de migración: concepto y análisis en el contexto regional}
+      \field{year}{2024}
+      \true{nocite}
+    \endentry
+    \entry{uvm2025_migracion_mexico}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=682b1b958761691864107aa9562b946c}{%
+           family={{Centro de Opinión Pública, Universidad del Valle de México}},
+           familyi={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{682b1b958761691864107aa9562b946c}
+      \strng{fullhash}{682b1b958761691864107aa9562b946c}
+      \strng{fullhashraw}{682b1b958761691864107aa9562b946c}
+      \strng{bibnamehash}{682b1b958761691864107aa9562b946c}
+      \strng{authorbibnamehash}{682b1b958761691864107aa9562b946c}
+      \strng{authornamehash}{682b1b958761691864107aa9562b946c}
+      \strng{authorfullhash}{682b1b958761691864107aa9562b946c}
+      \strng{authorfullhashraw}{682b1b958761691864107aa9562b946c}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://opinionpublica.uvm.mx/estudios/migracion-en-mexico-desafios-mas-alla-de-la-frontera/}}
+      \field{month}{6~17}
+      \field{note}{Accedido el 22 de febrero de 2026}
+      \field{title}{Migración en México, desafíos más allá de la frontera}
+      \field{year}{2025}
+      \true{nocite}
+    \endentry
+    \entry{dantzig1990}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=212fe65a17e797b6dbce0c3731498b2c}{%
+           family={Dantzig},
+           familyi={D\bibinitperiod},
+           given={George\bibnamedelima B.},
+           giveni={G\bibinitperiod\bibinitdelim B\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{212fe65a17e797b6dbce0c3731498b2c}
+      \strng{fullhash}{212fe65a17e797b6dbce0c3731498b2c}
+      \strng{fullhashraw}{212fe65a17e797b6dbce0c3731498b2c}
+      \strng{bibnamehash}{212fe65a17e797b6dbce0c3731498b2c}
+      \strng{authorbibnamehash}{212fe65a17e797b6dbce0c3731498b2c}
+      \strng{authornamehash}{212fe65a17e797b6dbce0c3731498b2c}
+      \strng{authorfullhash}{212fe65a17e797b6dbce0c3731498b2c}
+      \strng{authorfullhashraw}{212fe65a17e797b6dbce0c3731498b2c}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Interfaces}
+      \field{number}{4}
+      \field{title}{The Diet Problem}
+      \field{volume}{20}
+      \field{year}{1990}
+      \field{pages}{43\bibrangedash 47}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1287/inte.20.4.43
+      \endverb
+    \endentry
+    \entry{concepto2026_migracion}{misc}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=8dd3bf5c1415035bbbabd62918dde561}{%
+           family={{Editorial Etecé}},
+           familyi={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{8dd3bf5c1415035bbbabd62918dde561}
+      \strng{fullhash}{8dd3bf5c1415035bbbabd62918dde561}
+      \strng{fullhashraw}{8dd3bf5c1415035bbbabd62918dde561}
+      \strng{bibnamehash}{8dd3bf5c1415035bbbabd62918dde561}
+      \strng{authorbibnamehash}{8dd3bf5c1415035bbbabd62918dde561}
+      \strng{authornamehash}{8dd3bf5c1415035bbbabd62918dde561}
+      \strng{authorfullhash}{8dd3bf5c1415035bbbabd62918dde561}
+      \strng{authorfullhashraw}{8dd3bf5c1415035bbbabd62918dde561}
+      \field{sortinit}{E}
+      \field{sortinithash}{8da8a182d344d5b9047633dfc0cc9131}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://concepto.de/migracion/}}
+      \field{note}{Accedido el 22 de febrero de 2026}
+      \field{title}{Migración}
+      \field{year}{2026}
+      \true{nocite}
+    \endentry
+    \entry{doi:10.1287/opre.49.1.1.11187}{article}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=9a22b4ac9475e271153fc50f9d9f29d4}{%
+           family={Garille},
+           familyi={G\bibinitperiod},
+           given={Susan\bibnamedelima Garner},
+           giveni={S\bibinitperiod\bibinitdelim G\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c308091271df40c9e60c06ff6b26eb98}{%
+           family={Gass},
+           familyi={G\bibinitperiod},
+           given={Saul\bibnamedelima I.},
+           giveni={S\bibinitperiod\bibinitdelim I\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{dfd2d4fc613e036d05c2ec778308ade7}
+      \strng{fullhash}{dfd2d4fc613e036d05c2ec778308ade7}
+      \strng{fullhashraw}{dfd2d4fc613e036d05c2ec778308ade7}
+      \strng{bibnamehash}{dfd2d4fc613e036d05c2ec778308ade7}
+      \strng{authorbibnamehash}{dfd2d4fc613e036d05c2ec778308ade7}
+      \strng{authornamehash}{dfd2d4fc613e036d05c2ec778308ade7}
+      \strng{authorfullhash}{dfd2d4fc613e036d05c2ec778308ade7}
+      \strng{authorfullhashraw}{dfd2d4fc613e036d05c2ec778308ade7}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We review Stigler's diet problem, its impact on linear programming and operations research, and we determine minimum cost diets using updated nutritional and cost data. We also discuss how Stigler's diet problem formulation and its extensions have, over the years, influenced dietitians and nutritionists in their search for more wholesome but cost-effective diets.}
+      \field{journaltitle}{Operations Research}
+      \field{number}{1}
+      \field{title}{Stigler's Diet Problem Revisited}
+      \field{volume}{49}
+      \field{year}{2001}
+      \true{nocite}
+      \field{pages}{1\bibrangedash 13}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1287/opre.49.1.1.11187
+      \endverb
+      \verb{eprint}
+      \verb https://doi.org/10.1287/opre.49.1.1.11187
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1287/opre.49.1.1.11187
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1287/opre.49.1.1.11187
+      \endverb
+    \endentry
+    \entry{ceey2025_movilidad_social}{book}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=ff21745124990a586054001833853f56}{%
+           family={Moreno\bibnamedelima Treviño},
+           familyi={M\bibinitperiod\bibinitdelim T\bibinitperiod},
+           given={Jorge\bibnamedelima Omar},
+           giveni={J\bibinitperiod\bibinitdelim O\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=3ac770d5a45414ac8557de0a5e318c13}{%
+           family={Monroy-Gómez-Franco},
+           familyi={M\bibinithyphendelim G\bibinithyphendelim F\bibinitperiod},
+           given={Luis},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a8411768b63d73e20b0732b62b49d7b7}{%
+           family={Vélez\bibnamedelima Grajales},
+           familyi={V\bibinitperiod\bibinitdelim G\bibinitperiod},
+           given={Roberto},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{location}{1}{%
+        {Ciudad de México}%
+      }
+      \list{publisher}{1}{%
+        {Centro de Estudios Espinosa Yglesias}%
+      }
+      \strng{namehash}{b2c90d49692c41ef72b5180c57eea739}
+      \strng{fullhash}{156aeadb3bcbb7b4b993972ea06f36cc}
+      \strng{fullhashraw}{156aeadb3bcbb7b4b993972ea06f36cc}
+      \strng{bibnamehash}{156aeadb3bcbb7b4b993972ea06f36cc}
+      \strng{authorbibnamehash}{156aeadb3bcbb7b4b993972ea06f36cc}
+      \strng{authornamehash}{b2c90d49692c41ef72b5180c57eea739}
+      \strng{authorfullhash}{156aeadb3bcbb7b4b993972ea06f36cc}
+      \strng{authorfullhashraw}{156aeadb3bcbb7b4b993972ea06f36cc}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Disponible en: \url{https://ceey.org.mx/wp-content/uploads/2025/11/Informe-Movilidad-Social-en-Nuevo-Leon-2025.pdf}}
+      \field{title}{Informe de movilidad social en Nuevo León 2025}
+      \field{year}{2025}
+      \true{nocite}
+    \endentry
+    \entry{nahmias1982}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=957725d6f661183d7cc0047cb2a3c629}{%
+           family={Nahmias},
+           familyi={N\bibinitperiod},
+           given={Steven},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{957725d6f661183d7cc0047cb2a3c629}
+      \strng{fullhash}{957725d6f661183d7cc0047cb2a3c629}
+      \strng{fullhashraw}{957725d6f661183d7cc0047cb2a3c629}
+      \strng{bibnamehash}{957725d6f661183d7cc0047cb2a3c629}
+      \strng{authorbibnamehash}{957725d6f661183d7cc0047cb2a3c629}
+      \strng{authornamehash}{957725d6f661183d7cc0047cb2a3c629}
+      \strng{authorfullhash}{957725d6f661183d7cc0047cb2a3c629}
+      \strng{authorfullhashraw}{957725d6f661183d7cc0047cb2a3c629}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Operations Research}
+      \field{number}{4}
+      \field{title}{Perishable Inventory Theory: A Review}
+      \field{volume}{30}
+      \field{year}{1982}
+      \true{nocite}
+      \field{pages}{680\bibrangedash 708}
+      \range{pages}{29}
+      \verb{doi}
+      \verb 10.1287/opre.30.4.680
+      \endverb
+    \endentry
+    \entry{stigler1945}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=3e27ef99bf72db975408034556b655be}{%
+           family={Stigler},
+           familyi={S\bibinitperiod},
+           given={George\bibnamedelima J.},
+           giveni={G\bibinitperiod\bibinitdelim J\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{3e27ef99bf72db975408034556b655be}
+      \strng{fullhash}{3e27ef99bf72db975408034556b655be}
+      \strng{fullhashraw}{3e27ef99bf72db975408034556b655be}
+      \strng{bibnamehash}{3e27ef99bf72db975408034556b655be}
+      \strng{authorbibnamehash}{3e27ef99bf72db975408034556b655be}
+      \strng{authornamehash}{3e27ef99bf72db975408034556b655be}
+      \strng{authorfullhash}{3e27ef99bf72db975408034556b655be}
+      \strng{authorfullhashraw}{3e27ef99bf72db975408034556b655be}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Farm Economics}
+      \field{number}{2}
+      \field{title}{The Cost of Subsistence}
+      \field{urlday}{22}
+      \field{urlmonth}{2}
+      \field{urlyear}{2026}
+      \field{volume}{27}
+      \field{year}{1945}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \field{pages}{303\bibrangedash 314}
+      \range{pages}{12}
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/1243171
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/1243171
+      \endverb
+    \endentry
+    \entry{enwiki:1187845455}{misc}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=b6aea1a416c89509a7df1cbb69249cb6}{%
+           family={{Wikipedia contributors}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{fullhash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{fullhashraw}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{bibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorbibnamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authornamehash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorfullhash}{b6aea1a416c89509a7df1cbb69249cb6}
+      \strng{authorfullhashraw}{b6aea1a416c89509a7df1cbb69249cb6}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Wikipedia, The Free Encyclopedia}
+      \field{note}{Online; accessed 22-February-2026}
+      \field{title}{Inventory theory}
+      \field{year}{2023}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/w/index.php?title=Inventory_theory&oldid=1187845455
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/w/index.php?title=Inventory_theory&oldid=1187845455
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
